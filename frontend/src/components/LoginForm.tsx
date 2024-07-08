@@ -1,9 +1,9 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form, Button, Alert, Container, ButtonGroup } from 'react-bootstrap';
 
 const LoginForm: React.FC = () => {
-  const [email, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const navigate = useNavigate();
@@ -32,29 +32,36 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <Form onSubmit={handleLogin}>
-    <h2>Login</h2>
-    {message && <Alert variant="info">{message}</Alert>}
-    <Form.Group controlId="formUsername">
-      <Form.Label>Email</Form.Label>
-      <Form.Control 
-        type="text" 
-        value={email} 
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} 
-        required 
-      />
-    </Form.Group>
-    <Form.Group controlId="formPassword">
-      <Form.Label>Password</Form.Label>
-      <Form.Control 
-        type="password" 
-        value={password} 
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} 
-        required 
-      />
-    </Form.Group>
-    <Button variant="primary" type="submit">Login</Button>
-  </Form>
+    <Container className="d-flex align-items-center justify-content-center min-vh-100 min-vw-100 bg-dark">
+      <div className='w-25 border rounded shadow-sm overflow-hidden p-4 text-white'>
+        <Form onSubmit={handleLogin}>
+          <h4 className="align-item-">Login</h4>
+          {message && <Alert variant="info">{message}</Alert>}
+          <Form.Group className="pt-2" controlId="formEmail">
+            <Form.Label>Email</Form.Label>
+            <Form.Control 
+              type="email" 
+              value={email} 
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} 
+              required 
+            />
+          </Form.Group>
+          <Form.Group className="pt-2" controlId="formPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control 
+              type="password" 
+              value={password} 
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} 
+              required 
+            />
+          </Form.Group>
+          <ButtonGroup className="w-100 pt-4">
+            <Button variant="primary" type="submit">Login</Button>
+            <Button variant="danger" type="button" href='/'>Home</Button>
+          </ButtonGroup>
+        </Form>
+      </div>
+    </Container>
   );
 }
 
