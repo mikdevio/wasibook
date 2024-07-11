@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 
 import indexRouter from "./routers/index.router.js";
 import { mogoDBConnect, initializeDB } from "./config/db.js";
@@ -8,8 +9,16 @@ import { mogoDBConnect, initializeDB } from "./config/db.js";
 const app = express();
 const port = 3000;
 
+// Configurar CORS
+const corsOptions = {
+  origin: "http://localhost:5173", // Asegúrate de que este sea el origen correcto
+  credentials: true, // Permitir credenciales
+};
+
 //middleware
-app.use(cors()); // Cross origin resource sharing
+app.use(cors(corsOptions)); // Cross origin resource sharing
+// Cookie-parser
+app.use(cookieParser());
 // Body-parser
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));

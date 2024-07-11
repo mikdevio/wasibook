@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -18,7 +19,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<ProtectedRoute />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            {/* Otras rutas protegidas */}
+          </Route>
         </Routes>
     </Router>
     </>

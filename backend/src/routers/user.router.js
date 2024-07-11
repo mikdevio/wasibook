@@ -27,4 +27,6 @@ router.route("/delete/:id").get(VerifyAuth, userController.deleteItem);
 
 router.route("/report").get(VerifyAuth, userController.generateReport);
 
+router.route("/check-auth").get(userController.checkAuth);
+
 export default router;

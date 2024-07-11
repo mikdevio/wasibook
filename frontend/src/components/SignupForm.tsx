@@ -22,6 +22,7 @@ const SignupForm: React.FC = () => {
       if (response.ok) {
         setMessage('Login successful');
         localStorage.setItem('token', data.token);
+        console.log(`Token: ${localStorage.getItem('token')}`);
         navigate('/dashboard');
       } else {
         setMessage(data.message);
@@ -33,7 +34,7 @@ const SignupForm: React.FC = () => {
 
   return (
     <Container className='d-flex align-items-center justify-content-center min-vh-100 min-vw-100 bg-dark'>
-        <div className='w-25 border rounded shadow-sm overflow-hidden p-4 text-white'>
+        <div className='w-25 border rounded overflow-hidden p-4 text-white'>
             <Form onSubmit={handleLogin}>
                 <h4 className="align-item-">Signup</h4>
                 {message && <Alert variant="info">{message}</Alert>}

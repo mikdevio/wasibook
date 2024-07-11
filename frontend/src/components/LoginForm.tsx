@@ -13,16 +13,18 @@ const LoginForm: React.FC = () => {
     try {
       const response = await fetch('http://localhost:3000/user/login', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
+
       const data = await response.json();
+      
       if (response.ok) {
         setMessage('Login successful');
-        localStorage.setItem('token', data.token);
-        navigate('/dashboard');
+        navigate("/dashboard")
       } else {
         setMessage(data.message);
       }

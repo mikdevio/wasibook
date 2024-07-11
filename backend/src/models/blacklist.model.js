@@ -5,6 +5,7 @@ const BlacklistScheme = new mongoose.Schema(
     token: {
       type: String,
       require: true,
+      unique: true,
       ref: "User",
     },
   },

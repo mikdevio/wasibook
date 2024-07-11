@@ -8,7 +8,6 @@ import * as settings from "../settings.js";
 
 export const postLogin = async (req, res) => {
   const data = req.body;
-  console.log("intentando logear...");
   // Check if user exist
   const userFound = await User.findOne({ email: data.email }).select(
     "+password"
@@ -50,9 +49,10 @@ export const getLogout = async (req, res) => {
 
     const cookie = authHeader.split("=")[1];
     const accessToken = cookie.split(";")[0];
+
     const checkIfBlacklisted = await Blacklist.findOne({
       token: accessToken,
-    });
+    }).exec();
 
     if (checkIfBlacklisted) return res.sendStatus(204);
 
@@ -60,10 +60,17 @@ export const getLogout = async (req, res) => {
 
     await newBlacklist.save();
 
-    res.setHeader("Clear-Site-Data", "cookies");
-    res.status(401).json({
-      status: "Unathorized",
-      message: "Logout from account",
+    // res.setHeader("Clear-Site-Data", "cookies");
+    res.clearCookie("SessionID", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      path: "/",
+    });
+
+    res.status(200).json({
+      status: 200,
+      message: "Logout successful.",
     });
   } catch (error) {
     console.log(error);
@@ -223,5 +230,22 @@ export const generateReport = async (req, res) => {
     });
   } catch (error) {
     res.status(500).send("Error on PDF report generation.");
+  }
+};
+
+export const checkAuth = async (req, res) => {
+  const accessToken = req.cookies["SessionID"];
+  if (accessToken) {
+    const checkIfBlacklisted = await Blacklist.findOne({
+      token: accessToken,
+    }).exec();
+
+    if (!checkIfBlacklisted)
+      return res.status(200).json({ status: "authenticated" });
+    else {
+      res.status(401).json({ status: "unauthorized" });
+    }
+  } else {
+    res.status(401).json({ status: "unauthorized" });
   }
 };
