@@ -1,46 +1,81 @@
 import React from 'react';
-import NavigationBar from '../components/Navbar';
-import { Check } from 'react-bootstrap-icons'
+import { Container } from 'react-bootstrap';
 
-import { Card, Col, Container, Row } from 'react-bootstrap';
+import NavigationBar from '../components/Navbar';
+import StepMenu from '../components/booking/StepMenu';
 import BookingForm from '../components/booking/BookingForm';
 import ReservationSummary from '../components/booking/ReservationSummary';
-import '../components/booking/StepMenu.css'
+
+import { BookingData, PricesDictionary, CheckData, RoomData, ReservationData } from './../types/Types';
+
+const checkIn: CheckData = {
+  checkType: "in",
+  date: new Date("2022-05-22T16:00:00")
+}
+
+const checkOut: CheckData = {
+  checkType: "in",
+  date: new Date("2022-05-25T11:00:00")
+}
+
+const roomOne: RoomData = {
+  roomCode: "A01",
+  description: 'King bed stylish Apartment with Loft style family room'
+}
+
+const roomTwo: RoomData = {
+  roomCode: "B01",
+  description: 'King bed stylish Apartment with Loft style family room'
+}
+
+const Prices: PricesDictionary = {
+  "id_1": {
+    tag: 'Rooms and offer:',
+    value: 625.43
+  },
+  "id_2": {
+    tag: '8% VAT:',
+    value: 50.03
+  },
+  "id_3": {
+    tag: 'City tax:',
+    value: 16.44
+  },
+  "id_4": {
+    tag: 'Total Price:',
+    value: 698.87
+  },
+}
+
+const reservationOne: ReservationData = {
+  checkinData: checkIn,
+  checkoutData: checkOut,
+  roomData: roomOne
+}
+
+const reservationTwo: ReservationData = {
+  checkinData: checkIn,
+  checkoutData: checkOut,
+  roomData: roomTwo
+}
+
+const BookingExample: BookingData = {
+  reservationList: [ reservationOne, reservationTwo, reservationOne ],
+  pricesDictionary: Prices
+}
 
 const Home: React.FC = () => {
   return (
     <div>
       <NavigationBar />
       <Container className='mt-5'>
-        <Container className='mb-4 text-center'>
-          <Row className='justify-content-center align-items-center'>
-            <Col className='d-flex justify-content-center align-items-center'>
-              <Card className='rounded shadow d-flex justify-content-center align-items-center' style={{width: '40px', height: '40px', backgroundColor: '#0ac228', color: 'white' }}>
-                <Check size={32} className='icon'/>
-              </Card>
-              <span className='mx-2 text-success'>Dates & Rooms</span>
-              <span className="step-line"></span>
-            </Col>
-            <Col className='d-flex justify-content-center align-items-center'>
-              <Card className='rounded shadow d-flex justify-content-center align-items-center bg-primary text-white' style={{width: '40px', height: '40px'}}>2</Card>
-              <span className='mx-2 text-primary'>Extras</span>
-            </Col>
-            <Col className='d-flex justify-content-center align-items-center'>
-              <Card className='rounded shadow d-flex justify-content-center align-items-center' style={{width: '40px', height: '40px'}}>3</Card>
-              <span className='mx-2'>Payment</span>
-            </Col>
-            <Col className='d-flex justify-content-center align-items-center'>
-              <Card className='rounded shadow d-flex justify-content-center align-items-center' style={{width: '40px', height: '40px'}}>4</Card>
-              <span className='mx-2'>Confirmation</span>
-            </Col>
-          </Row>
-        </Container>
+        <StepMenu />
         <div className="row">
           <div className="col-md-8">
-            <BookingForm />
+            <BookingForm bookingData={BookingExample}/>
           </div>
           <div className="col-md-4">
-            <ReservationSummary />
+            <ReservationSummary bookingData={BookingExample}/>
           </div>
         </div>
       </Container>
