@@ -1,9 +1,9 @@
 import React from 'react';
 import NavigationBar from '../components/Navbar';
-import Heroes from '../components/Heroes';
-import Features from '../components/Features';
+import Heroes from '../components/homepage/Heroes';
+import Features from '../components/homepage/Features';
 import Footer from '../components/Footer';
-import Album from '../components/Album';
+import Album from '../components/homepage/Album';
 
 import { Container } from 'react-bootstrap';
 
