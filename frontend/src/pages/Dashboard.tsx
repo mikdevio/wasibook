@@ -60,7 +60,7 @@ const reservationTwo: ReservationData = {
 }
 
 const BookingExample: BookingData = {
-  reservationList: [ reservationOne, reservationTwo, reservationOne ],
+  reservationList: [ reservationOne, reservationTwo ],
   pricesDictionary: Prices
 }
 

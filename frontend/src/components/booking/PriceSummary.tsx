@@ -16,7 +16,7 @@ const PriceSummary: React.FC<PriceSummaryProps> = (props: PriceSummaryProps) => 
       {Object.entries(prices_dict).map(([id, priceData]) => (
           <PriceRow tag_name={priceData.tag} value={priceData.value} />
         ))}
-      <Row className='mt-4'>
+      <Row className='mt-4 px-2'>
         <Button variant='primary' className=''>Request to book</Button>
       </Row>
     </Container>

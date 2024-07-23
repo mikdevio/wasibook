@@ -1,5 +1,5 @@
 import React from 'react';
-import { Accordion, Card, CardBody, Col, Container, Form, Row } from 'react-bootstrap';
+import { Accordion, Button, Card, CardBody, Col, Container, Form, Row } from 'react-bootstrap';
 
 import icon from '../../assets/placeholder.svg'
 import { BookingData, ReservationData } from '../../types/Types';
@@ -12,13 +12,15 @@ interface BookingFormProps {
 const BookingForm: React.FC<BookingFormProps> = (props:BookingFormProps) => {
   const { bookingData } = props;
   return (
-    <div className="card">
+    <div className="card shadow">
       <div className="card-body">
         {bookingData.reservationList.map(reserv => (
           <ReservationCard imgURL={icon} reservationData={reserv}/>
         ))}
         <DisclaimerArea />
         <DetailsForm />
+        <ExtrasArea />
+        <ButtonsArea />
       </div>
     </div>
   );
@@ -71,7 +73,7 @@ const DetailsForm: React.FC<DetailsFormProps> = () => {
   return (
     <Card className='mb-4'>
       <Card.Body>
-        <Card.Title>Enter your details:</Card.Title>
+        <Card.Title className='pb-2'>Enter your details</Card.Title>
         <Form>
           <Row className='mb-3'>
             <Form.Group as={Col} controlId="formGridFirstName">
@@ -98,6 +100,49 @@ const DetailsForm: React.FC<DetailsFormProps> = () => {
         </Form>
       </Card.Body>
     </Card>
+  );
+}
+
+interface ExtrasAreaProps {}
+
+const ExtrasArea: React.FC<ExtrasAreaProps> = () => {
+  return (
+    <Card className='mb-4'>
+      <Card.Body>
+        <Card.Title>Extras</Card.Title>
+        <Accordion defaultActiveKey='0'>
+          <Accordion.Item eventKey='0'>
+            <Accordion.Header>Parking</Accordion.Header>
+            <Accordion.Body>Details</Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey='1'>
+            <Accordion.Header>Beberagues</Accordion.Header>
+            <Accordion.Body>Details</Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey='2'>
+            <Accordion.Header>Stay of pets</Accordion.Header>
+            <Accordion.Body>Details</Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey='3'>
+            <Accordion.Header>Others</Accordion.Header>
+            <Accordion.Body>Details</Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+      </Card.Body>
+    </Card>
+  );
+}
+
+interface ButtonsAreaProps {}
+
+const ButtonsArea: React.FC<ButtonsAreaProps> = () => {
+  return (
+    <Container>
+      <Row>
+        <Col><Button variant="danger" className='w-100'>Return</Button></Col>
+        <Col><Button variant="primary" className='w-100'>Confirm</Button></Col>
+      </Row>
+    </Container>
   );
 }
 

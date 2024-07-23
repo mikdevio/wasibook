@@ -27,7 +27,7 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = (props: Reservatio
   }
 
   return (
-    <Card>
+    <Card className='shadow'>
       <Card.Body>
         <Card.Title>Reservation Summary</Card.Title>
         { bookingData.reservationList.map(reserv => (
@@ -80,7 +80,7 @@ interface StayLabelProps {
 const StayLabel: React.FC<StayLabelProps> = (props: StayLabelProps) => {
   const { days } = props;
   return (
-    <Container className='mt-3 mb-2'>
+    <Container className='mt-2 mb-2'>
       <Row>
         <Card.Text className='p-0 fw-bold'>Total Length of Stay:</Card.Text>
       </Row>
@@ -99,15 +99,19 @@ interface RoomSelectedLabelProps {
 const RoomSelectedLabel: React.FC<RoomSelectedLabelProps> = (props: RoomSelectedLabelProps) => {
   const { code, description } = props;
   return (
-    <Container className="mt-2 mb-4">
+    <Container className="mt-2 mb-2">
       <Row><Card.Text className='p-0 fw-bold'>You selected:</Card.Text></Row>
       <Row className='d-flex justify-content-center align-items-center'>
         <Col className='col-2'>{ code }</Col>
         <Col>{ description }</Col>
       </Row>
       <Row className='d-flex justify-content-center mt-2'>
-        <Col className='text-center'><Card.Link>Change</Card.Link></Col>
-        <Col className='text-center'><Card.Link className='text-danger'>Delete</Card.Link></Col>
+        <Col className='text-center'>
+          <Card.Link>Change</Card.Link>
+        </Col>
+        <Col className='text-center'>
+          <Card.Link className='text-danger'>Delete</Card.Link>
+        </Col>
       </Row>
     </Container>
   );
