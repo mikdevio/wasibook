@@ -28,3 +28,9 @@ export type BookingData = {
     reservationList: ReservationData[];
     pricesDictionary: PricesDictionary;
 }
+
+export enum StepState {
+    Incompleted,
+    InProcess,
+    Completed
+}
