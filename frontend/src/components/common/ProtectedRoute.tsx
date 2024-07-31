@@ -1,7 +1,7 @@
 // ProtectedRoute.tsx
-import React, { useEffect, useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { checkAuth } from '../services/auth';
+import React, { useEffect, useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { checkAuth } from "../../services/auth";
 
 const ProtectedRoute: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);

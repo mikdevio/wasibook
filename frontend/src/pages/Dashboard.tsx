@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
 
-import NavigationBar from "../components/Navbar";
+import NavigationBar from "../components/common/Navbar";
 import StepMenu from "../components/booking/StepMenu";
 import ExtrasForm from "../components/booking/ExtrasForm";
 import RoomSelectionForm from "../components/booking/RoomSelectionForm";

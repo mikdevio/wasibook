@@ -1,5 +1,5 @@
 import path from "path";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -22,4 +22,7 @@ export const __public = path.join(__dirname, "public");
 
 export const __css = path.join(__public, "css");
 
-export const __perfile_default = path.join(__public, "assets/img/perfile_default.png");
+export const __perfile_default = path.join(
+  __public,
+  "assets/img/perfile_default.png"
+);

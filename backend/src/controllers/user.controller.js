@@ -95,6 +95,7 @@ export const postSignup = async (req, res) => {
 
     // Check if user exist in database
     const userExist = await User.findOne({ email: email });
+
     if (userExist) {
       return res.status(200).json({
         status: "error",

@@ -1,105 +1,123 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Form, Button, Alert, Container, ButtonGroup } from 'react-bootstrap';
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  Form,
+  Button,
+  Container,
+  ButtonGroup,
+  Card,
+  Row,
+  Col,
+  Alert,
+} from "react-bootstrap";
+import { FormProvider, useForm } from "react-hook-form";
+import { userSignupSchema, userSignupForm } from "../schemas/user";
+import InputGroup from "./InputGroup";
+import { userSignup } from "../services/auth";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignupForm: React.FC = () => {
-  const [email, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
+  const methods = useForm<userSignupForm>({
+    resolver: zodResolver(userSignupSchema),
+  });
+
+  const [isSignup, setIsSignup] = useState<boolean | null>(null);
+  const [message, setMessage] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleLogin = async (event: FormEvent) => {
-    event.preventDefault();
+  const onSubmit = async (data: userSignupForm) => {
     try {
-      const response = await fetch('http://localhost:3000/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setMessage('Login successful');
-        localStorage.setItem('token', data.token);
-        console.log(`Token: ${localStorage.getItem('token')}`);
-        navigate('/dashboard');
+      const response = await userSignup(
+        data.firstName,
+        data.lastName,
+        data.email,
+        data.password
+      );
+
+      if (response) {
+        // TODO: Send message to LoginForm
+        setMessage("Signup successfully");
+        setIsSignup(true);
+        navigate("/login");
       } else {
-        setMessage(data.message);
+        setMessage("Error while signing up");
+        setIsSignup(false);
       }
     } catch (error) {
-      setMessage('Error logging in');
+      setMessage("Server error while signing up");
+      setIsSignup(false);
     }
   };
 
   return (
-    <Container className='d-flex align-items-center justify-content-center min-vh-100 min-vw-100 bg-dark'>
-        <div className='w-25 border rounded overflow-hidden p-4 text-white'>
-            <Form onSubmit={handleLogin}>
-                <h4 className="align-item-">Signup</h4>
-                {message && <Alert variant="info">{message}</Alert>}
-                <Form.Group className="pt-2" controlId="formFirstName">
-                <Form.Label>User first name</Form.Label>
-                <Form.Control 
-                    type="text" 
-                    value={email} 
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} 
-                    required 
-                />
-                </Form.Group>
-                <Form.Group className="pt-2" controlId="formLastName">
-                <Form.Label>User last name</Form.Label>
-                <Form.Control 
-                    type="text" 
-                    value={email} 
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} 
-                    required 
-                />
-                </Form.Group>
-                <Form.Group className="pt-2" controlId="formEmail">
-                <Form.Label>Email</Form.Label>
-                <Form.Control 
-                    type="text" 
-                    value={email} 
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} 
-                    required 
-                />
-                </Form.Group>
-                <Form.Group className="pt-2" controlId="formEmailVerify">
-                <Form.Label>Verify email</Form.Label>
-                <Form.Control 
-                    type="text" 
-                    value={email} 
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} 
-                    required 
-                />
-                </Form.Group>
-                <Form.Group className="pt-2" controlId="formPassword">
-                <Form.Label>Password</Form.Label>
-                <Form.Control 
-                    type="password" 
-                    value={password} 
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} 
-                    required 
-                />
-                </Form.Group>
-                <Form.Group className="pt-2" controlId="formPasswordVerify">
-                <Form.Label>Verify password</Form.Label>
-                <Form.Control 
-                    type="password" 
-                    value={password} 
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} 
-                    required 
-                />
-                </Form.Group>
-                <ButtonGroup className="w-100 pt-4">
-                <Button variant="warning" type="submit">Signup</Button>
-                <Button variant="danger" type="button" href='/'>Home</Button>
-                </ButtonGroup>
-            </Form>
-        </div>
+    <Container className="d-flex align-items-center justify-content-center min-vh-100 min-vw-100 bg-dark">
+      <Card
+        className="border rounded overflow-hidden p-4 bg-dark text-white"
+        style={{ width: "500px" }}
+      >
+        <FormProvider {...methods}>
+          <Form onSubmit={methods.handleSubmit(onSubmit)}>
+            {message && <Alert variant="info">{message}</Alert>}
+            <Row>
+              <Col>
+                <h4>Signup</h4>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <InputGroup
+                  id="firstName"
+                  type="text"
+                  toRegister={true}
+                  placeholder="Miguel"
+                >
+                  Nombre
+                </InputGroup>
+              </Col>
+              <Col>
+                <InputGroup
+                  id="lastName"
+                  type="text"
+                  toRegister={true}
+                  placeholder="Lopéz"
+                >
+                  Apellido
+                </InputGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <InputGroup
+                  id="email"
+                  type="email"
+                  toRegister={true}
+                  placeholder="miguel.lopez@email.com"
+                >
+                  Email
+                </InputGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <InputGroup id="password" type="password" toRegister={true}>
+                  Contraseña
+                </InputGroup>
+              </Col>
+            </Row>
+            <ButtonGroup className="w-100 pt-4">
+              <Button variant="warning" type="submit">
+                Signup
+              </Button>
+              <Button variant="danger" type="button" href="/">
+                Home
+              </Button>
+            </ButtonGroup>
+          </Form>
+        </FormProvider>
+      </Card>
     </Container>
   );
-}
+};
 
 export default SignupForm;
