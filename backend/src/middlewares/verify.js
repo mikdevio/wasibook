@@ -43,3 +43,18 @@ export async function VerifyAuth(req, res, next) {
     });
   }
 }
+
+export function VerifyRole(roles = []) {
+  if (typeof roles === "string") {
+    roles = [roles];
+  }
+
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        message: "Forbidden action for your role",
+      });
+    }
+    next();
+  };
+}

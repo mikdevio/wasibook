@@ -9,7 +9,7 @@ import { Container } from "react-bootstrap";
 
 const Home: React.FC = () => {
   return (
-    <div>
+    <>
       <Container fluid className="p-0">
         <NavigationBar />
         <Heroes />
@@ -17,7 +17,7 @@ const Home: React.FC = () => {
         <Album />
         <Footer />
       </Container>
-    </div>
+    </>
   );
 };
 

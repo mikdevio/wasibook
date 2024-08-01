@@ -80,8 +80,7 @@ const StepBox: React.FC<StepBoxProps> = (props) => {
         )}
       </Card>
       <span className="mx-2" style={{ color: currentStyle.label_color }}>
-        {" "}
-        {stepLabel}{" "}
+        {stepLabel}
       </span>
     </Col>
   );

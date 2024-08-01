@@ -44,10 +44,22 @@ const userSchema = new Schema(
       },
       contentType: String,
     },
-    role: {
-      type: Schema.Types.ObjectId,
-      ref: "Role",
+    phone: {
+      type: String,
+      required: false,
     },
+    role: {
+      type: String,
+      enum: ["customer", "staff", "admin"],
+      default: "customer",
+      required: true,
+    },
+    reservations: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Reservation",
+      },
+    ],
   },
   { timestamps: true }
 );

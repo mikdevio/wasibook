@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 
 import NavigationBar from "../components/common/Navbar";
 import StepMenu from "../components/booking/StepMenu";
@@ -189,18 +189,18 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <NavigationBar />
-      <Container className="mt-5">
+      <Container className="mt-4">
         <StepMenu
           stepList={steps}
           onStepSelect={setSelectedStep}
           currentStep={selectedStep}
         />
-        <div className="row">
-          <div className="col-md-8">{renderStepComponent()}</div>
-          <div className="col-md-4">
+        <Row className="row">
+          <Col className="col-md-8">{renderStepComponent()}</Col>
+          <Col className="col-md-4">
             <ReservationSummary bookingData={BookingExample} />
-          </div>
-        </div>
+          </Col>
+        </Row>
       </Container>
     </>
   );
