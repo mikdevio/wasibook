@@ -1,4 +1,5 @@
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import { StarFill } from "react-bootstrap-icons";
 import { RoomData } from "../../types/Types";
 
 interface RoomSelectionFormProps {
@@ -12,7 +13,7 @@ const RoomSelectionForm: React.FC<RoomSelectionFormProps> = (
 
   return (
     <Container>
-      <Card className="shadow p-2">
+      <Card className="shadow p-3 h-100">
         <Row className="justify-content-center">
           {roomList.map((room, index) => (
             <Col ke={index} md={4} className="d-flex align-items-stretch mb-4">
@@ -36,22 +37,38 @@ interface RoomCardProps {
 const RoomCard: React.FC<RoomCardProps> = (props: RoomCardProps) => {
   const { image, room, stars, description, price } = props;
 
+  const starsCount = Array.from({ length: stars });
+
   return (
-    <Card className="mt-2" style={{ width: "250px", height: "250px" }}>
-      <Card.Img variant="top" src={image} />
-      <Card.Body>
-        <Card.Title>{room}</Card.Title>
-        <Card.Text>{description}</Card.Text>
+    <Card className="mt-2" style={{ width: "100%", height: "250px" }}>
+      <Card.Img
+        variant="top"
+        src={image}
+        style={{ width: "100%", height: "40%" }}
+      />
+      <Card.Body as={Container} className="px-3">
+        <Row>
+          <Card.Title>{room}</Card.Title>
+        </Row>
+        <Row>
+          <Card.Text>{description}</Card.Text>
+        </Row>
         <Row>
           <Col>
-            <span>{stars}</span>
+            {starsCount.map((_, index) => (
+              <StarFill key={index} style={{ color: "orange" }} />
+            ))}
           </Col>
-          <Col>
-            <span>{price}</span>
+          <Col className="text-end">
+            <span className="text-primary fw-bolder ">{price} USD</span>
           </Col>
         </Row>
         <Row>
-          <Button variant="success">Book Room</Button>
+          <Col className="">
+            <Button variant="primary" className="bt-sm w-100">
+              Book Room
+            </Button>
+          </Col>
         </Row>
       </Card.Body>
     </Card>

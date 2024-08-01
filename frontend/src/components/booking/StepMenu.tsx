@@ -1,6 +1,5 @@
 import { Check } from "react-bootstrap-icons";
 import { Container, Card, Col, Row } from "react-bootstrap";
-import styles from "./StepMenu,module.css";
 import { StepData, StepState } from "../../types/Types";
 
 interface StepMenuProps {

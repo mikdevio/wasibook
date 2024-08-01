@@ -142,6 +142,30 @@ const rooms = [
     description: "Des3",
     price: 50.6,
   },
+  {
+    image: "url/img/3.jpeg",
+    roomCode: "A003",
+    stars: 4,
+    room: "Duplex King",
+    description: "Des3",
+    price: 50.6,
+  },
+  {
+    image: "url/img/3.jpeg",
+    roomCode: "A003",
+    stars: 4,
+    room: "Duplex King",
+    description: "Des3",
+    price: 50.6,
+  },
+  {
+    image: "url/img/3.jpeg",
+    roomCode: "A003",
+    stars: 4,
+    room: "Duplex King",
+    description: "Des3",
+    price: 50.6,
+  },
 ];
 
 const Dashboard: React.FC = () => {
