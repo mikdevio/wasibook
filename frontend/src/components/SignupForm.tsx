@@ -37,9 +37,11 @@ const SignupForm: React.FC = () => {
 
       if (response) {
         // TODO: Send message to LoginForm
-        setMessage("Signup successfully");
+        setMessage("Signup successfully. Please, login now.");
         setIsSignup(true);
-        navigate("/login");
+        navigate("/login", {
+          state: { message: "Signup successfully." },
+        });
       } else {
         setMessage("Error while signing up");
         setIsSignup(false);
@@ -61,7 +63,7 @@ const SignupForm: React.FC = () => {
             {message && <Alert variant="info">{message}</Alert>}
             <Row>
               <Col>
-                <h4>Signup</h4>
+                <h4>Crear cuenta nueva</h4>
               </Col>
             </Row>
             <Row>
@@ -100,19 +102,31 @@ const SignupForm: React.FC = () => {
             </Row>
             <Row>
               <Col>
-                <InputGroup id="password" type="password" toRegister={true}>
+                <InputGroup
+                  id="password"
+                  type="password"
+                  toRegister={true}
+                  placeholder="Contraseña de 8 carácteres"
+                >
                   Contraseña
                 </InputGroup>
               </Col>
             </Row>
-            <ButtonGroup className="w-100 pt-4">
-              <Button variant="warning" type="submit">
-                Signup
-              </Button>
-              <Button variant="danger" type="button" href="/">
-                Home
-              </Button>
-            </ButtonGroup>
+            <Row>
+              <ButtonGroup className="w-100 pt-4">
+                <Button variant="warning" type="submit">
+                  Crear cuenta
+                </Button>
+                <Button variant="danger" type="button" href="/">
+                  Home
+                </Button>
+              </ButtonGroup>
+            </Row>
+            <Row className="mt-4">
+              <a href="/login" className="text-white text-decoration-none">
+                ¿Tienes una cuenta?
+              </a>
+            </Row>
           </Form>
         </FormProvider>
       </Card>

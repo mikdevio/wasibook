@@ -1,20 +1,30 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Form, Button, Alert, Container, ButtonGroup } from "react-bootstrap";
-import InputGroup from "./InputGroup";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  Form,
+  Button,
+  Alert,
+  Container,
+  ButtonGroup,
+  Card,
+} from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-import { userLoginForm, userLoginSchema } from "../schemas/user";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import InputGroup from "./InputGroup";
+import { userLoginForm, userLoginSchema } from "../schemas/user";
 import { userLogin } from "../services/auth";
+import DismissibleAlert from "./common/Alert";
 
 const LoginForm: React.FC = () => {
   const methods = useForm<userLoginForm>({
     resolver: zodResolver(userLoginSchema),
   });
 
-  const [isLogin, setIsLogin] = useState<boolean | null>(null);
-  const [message, setMessage] = useState<string>("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isLogin, setIsLogin] = useState<boolean | null>(null);
+  const [message, setMessage] = useState<string>(location.state?.message || "");
 
   const onSubmit = async (data: userLoginForm) => {
     try {
@@ -35,14 +45,15 @@ const LoginForm: React.FC = () => {
 
   return (
     <Container className="d-flex align-items-center justify-content-center min-vh-100 min-vw-100 bg-dark">
-      <div
+      <Card
         className="border rounded p-4 text-white bg-dark"
         style={{ width: "500px" }}
       >
         <FormProvider {...methods}>
           <Form onSubmit={methods.handleSubmit(onSubmit)}>
             <h4 className="align-item-">Login</h4>
-            {message && <Alert variant="info">{message}</Alert>}
+            <DismissibleAlert message={message} />
+            {/* {message && <Alert variant="info">{message}</Alert>} */}
             <InputGroup
               id="email"
               type="email"
@@ -67,9 +78,17 @@ const LoginForm: React.FC = () => {
                 Home
               </Button>
             </ButtonGroup>
+            <div className="d-flex mt-4 justify-content-between align-items-center">
+              <a href="#" className="text-white text-decoration-none">
+                ¿Olvidaste tu contraseña?
+              </a>
+              <a href="/signup" className="text-white text-decoration-none">
+                Crea cuenta nueva
+              </a>
+            </div>
           </Form>
         </FormProvider>
-      </div>
+      </Card>
     </Container>
   );
 };
