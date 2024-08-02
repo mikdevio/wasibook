@@ -2,24 +2,18 @@ import fs from "fs";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
-
 import * as settings from "../settings.js";
 
 const Schema = mongoose.Schema;
 
-const SALT_WORK_FACTOR = 10;
-
-// TODO: Merge User and Customer
-
-// Schema definition
-const userSchema = new Schema(
+const userBaseSchema = new Schema(
   {
-    first_name: {
+    firstName: {
       type: String,
       required: "Your first name is requiered",
       max: 25,
     },
-    last_name: {
+    lastName: {
       type: String,
       required: "Your lastname is requiered",
       max: 25,
@@ -40,32 +34,27 @@ const userSchema = new Schema(
     img: {
       data: {
         type: Buffer,
-        default: fs.readFileSync(settings.__perfile_default),
+        default: fs.readFileSync(settings.DEFAULT_PERFILE_IMG),
       },
       contentType: String,
     },
     phone: {
       type: String,
       required: false,
+      max: 25,
     },
-    role: {
+    address: {
       type: String,
-      enum: ["customer", "staff", "admin"],
-      default: "customer",
-      required: true,
+      required: false,
+      max: 52,
     },
-    reservations: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Reservation",
-      },
-    ],
   },
-  { timestamps: true }
+  { timestamps: true },
+  { discriminationKey: "kind", collection: "Users" }
 );
 
 // Method to hash passwords with save
-userSchema.pre("save", function (next) {
+userBaseSchema.pre("save", function (next) {
   let user = this;
 
   // If password is not modified or new got to next
@@ -73,7 +62,7 @@ userSchema.pre("save", function (next) {
 
   try {
     // Generating a salt
-    bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+    bcrypt.genSalt(settings.SALT_WORK_FACTOR, (err, salt) => {
       // If error go to next
       if (err) return next();
 
@@ -90,10 +79,10 @@ userSchema.pre("save", function (next) {
 });
 
 // Method to hash passwords with insertMany
-userSchema.pre("insertMany", async function (next, docs) {
+userBaseSchema.pre("insertMany", async function (next, docs) {
   try {
     for (const doc of docs) {
-      const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+      const salt = await bcrypt.genSalt(settings.SALT_WORK_FACTOR);
       doc.password = await bcrypt.hash(doc.password, salt);
     }
   } catch (error) {
@@ -102,7 +91,7 @@ userSchema.pre("insertMany", async function (next, docs) {
 });
 
 // Method to create session token
-userSchema.methods.generateAccessJWT = function () {
+userBaseSchema.methods.generateAccessJWT = function () {
   let payload = {
     id: this._id,
   };
@@ -114,8 +103,36 @@ userSchema.methods.generateAccessJWT = function () {
 };
 
 // Method to compare password
-userSchema.methods.comparePassword = function (passwordToValidate) {
+userBaseSchema.methods.comparePassword = function (passwordToValidate) {
   return bcrypt.compare(passwordToValidate, this.password);
 };
 
-export default mongoose.model("User", userSchema);
+export const UserBase = mongoose.model("UserBase", userBaseSchema);
+
+export const User = UserBase.discriminator(
+  "User",
+  new Schema({
+    role: {
+      type: String,
+      enum: settings.ROLES_GROUP.ALL,
+      default: "customer",
+      required: true,
+    },
+  })
+);
+
+export const Customer = UserBase.discriminator(
+  "Customer",
+  new Schema({
+    taxNumber: {
+      type: String,
+      required: true,
+    },
+    reservations: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Reservation",
+      },
+    ],
+  })
+);

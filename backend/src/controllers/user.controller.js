@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import User from "../models/user.model.js";
+import { User, Customer, UserBase } from "../models/user.model.js";
 import Blacklist from "../models/blacklist.model.js";
 
 import * as baseController from "../controllers/base.controller.js";
@@ -11,9 +11,10 @@ import * as settings from "../settings.js";
 export const postLogin = async (req, res) => {
   const data = req.body;
   // Check if user exist
-  const userFound = await User.findOne({ email: data.email }).select(
+  const userFound = await UserBase.findOne({ email: data.email }).select(
     "+password"
   );
+
   if (!userFound) {
     return res.status(404).send("User not found.");
   }
@@ -40,7 +41,7 @@ export const postLogin = async (req, res) => {
     status: 200,
     message: "Ok. New token assigned.",
   });
-  console.log("Logeado");
+  console.log(`Usuario ${userFound.email} logeado`);
 };
 
 export const getLogout = async (req, res) => {
@@ -88,7 +89,7 @@ export const postSignup = async (req, res) => {
   const { first_name, last_name, email, password } = req.body;
   try {
     // Create a user to save
-    const newUser = new User({
+    const newCustomer = new Customer({
       first_name,
       last_name,
       email,
@@ -96,17 +97,19 @@ export const postSignup = async (req, res) => {
     });
 
     // Check if user exist in database
-    const userExist = await User.findOne({ email: email });
+    const customerExist = await Customer.findOne({ email: email });
 
-    if (userExist) {
+    if (customerExist) {
       return res.status(200).json({
         status: "error",
         message: "It seems you already have an account, please log in instead.",
       });
     }
 
-    const savedUser = await newUser.save();
-    const { role, ...user_data } = savedUser._doc;
+    const savedCustomer = await newCustomer.save();
+
+    const { role, ...user_data } = savedCustomer._doc;
+
     res.status(200).json({
       status: "success",
       message:
@@ -129,12 +132,12 @@ export const checkAuth = async (req, res) => {
     }).exec();
 
     if (!checkIfBlacklisted)
-      return res.status(200).json({ status: "authenticated" });
+      return res.status(200).json({ status: "Authenticated" });
     else {
-      res.status(401).json({ status: "unauthorized" });
+      res.status(401).json({ status: "Unauthorized" });
     }
   } else {
-    res.status(401).json({ status: "unauthorized" });
+    res.status(401).json({ status: "Unauthorized" });
   }
 };
 

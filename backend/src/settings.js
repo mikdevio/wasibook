@@ -6,32 +6,34 @@ dotenv.config();
 
 export const { MONGODB_URL, PORT, SECRET_ACCESS_TOKEN } = process.env;
 
-export const __filename = fileURLToPath(import.meta.url);
+export const FILENAME = fileURLToPath(import.meta.url);
 
-export const __dirname = path.dirname(__filename);
+export const DIRNAME = path.dirname(FILENAME);
 
-export const __layouts = path.join(__dirname, "views/layouts");
+export const LAYOUTS = path.join(DIRNAME, "views/layouts");
 
-export const __reports = path.join(__dirname, "views/reports");
+export const REPORTS = path.join(DIRNAME, "views/reports");
 
-export const __layout_main = path.join(__layouts, "main");
+export const LAYOUT_MAIN = path.join(LAYOUTS, "main");
 
-export const __layout_dashboard = path.join(__layouts, "dashboard");
+export const LAYOUT_DASHBOARD = path.join(LAYOUTS, "dashboard");
 
-export const __public = path.join(__dirname, "public");
+export const PUBLIC_DIR = path.join(DIRNAME, "public");
 
-export const __css = path.join(__public, "css");
+export const CSS_DIR = path.join(PUBLIC_DIR, "css");
 
-export const __perfile_default = path.join(
-  __public,
+export const DEFAULT_PERFILE_IMG = path.join(
+  PUBLIC_DIR,
   "assets/img/perfile_default.png"
 );
 
 // TODO: Change this way to point of roles groups for permissions
-export const RolesGroup = {
-  all: ["customer", "staff", "admin"],
-  onlyCustomer: ["customer"],
-  staffAndAdmin: ["staff", "admin"],
-  onlyAdmin: ["admin"],
-  onlyStaff: ["staff"],
+export const ROLES_GROUP = {
+  ALL: ["customer", "staff", "admin"],
+  ONLY_CUSTOMER: ["customer"],
+  STAFF_AND_ADMIN: ["staff", "admin"],
+  ONLY_ADMIN: ["admin"],
+  ONLY_STAFF: ["staff"],
 };
+
+export const SALT_WORK_FACTOR = 10;

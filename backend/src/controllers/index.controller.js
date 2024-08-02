@@ -1,7 +1,5 @@
 import path from "path";
 
-import { __layout_main } from "../settings.js";
-
 export const home = (req, res) => {
   res.status(200).json({
     status: "Ok",

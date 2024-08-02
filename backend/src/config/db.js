@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-import User from "../models/user.model.js";
+import { User, Customer } from "../models/user.model.js";
 
 dotenv.config();
 
@@ -19,39 +19,57 @@ export async function mogoDBConnect() {
 // TODO: Complete this DB initialization
 export const initializeDB = async () => {
   // Insert data on customers collection
-  // await Customer.insertMany([
-  //   {
-  //     first_name: "Pablo",
-  //     last_name: "Contreras",
-  //     tax_number: "ERDF12463215A",
-  //     email: "pablo.cont@gmail.com",
-  //     phone: "593945623158",
-  //     password: "123456",
-  //   },
-  //   {
-  //     first_name: "María",
-  //     last_name: "Valladares",
-  //     tax_number: "ERDF4578996246Z",
-  //     email: "mar.vall@gmail.com",
-  //     phone: "593985632147",
-  //     password: "123456",
-  //   },
-  // ]);
+  try {
+    // Checking collections on db
+    const collections = await mongoose.connection.db
+      .listCollections()
+      .toArray();
 
-  // Insert data on users collection
-  await User.insertMany([
-    {
-      first_name: "admin",
-      last_name: "admin",
-      email: "admin@admin.com",
-      password: "admin",
-    },
-    {
-      first_name: "Borrable",
-      last_name: "Borrado",
-      email: "borrable.usuario@gmail.com",
-      password: "123456",
-      __v: 0,
-    },
-  ]);
+    if (collections.length === 0) {
+      await Customer.insertMany([
+        {
+          firstName: "Pablo",
+          lastName: "Contreras",
+          taxNumber: "ERDF12463215A",
+          email: "pablo.cont@gmail.com",
+          phone: "593945623158",
+          password: "123456",
+        },
+        {
+          firstName: "María",
+          lastName: "Valladares",
+          taxNumber: "ERDF4578996246Z",
+          email: "mar.vall@gmail.com",
+          phone: "593985632147",
+          password: "123456",
+        },
+      ]);
+
+      // Insert data on users collection
+      await User.insertMany([
+        {
+          firstName: "admin",
+          lastName: "admin",
+          email: "admin@admin.com",
+          password: "admin",
+          phone: "593945623158",
+          role: "admin",
+        },
+        {
+          firstName: "Borrable",
+          lastName: "Borrado",
+          email: "borrable.usuario@gmail.com",
+          password: "123456",
+          phone: "593945623158",
+          role: "admin",
+        },
+      ]);
+
+      console.log("Dabase initialized with data.");
+    } else {
+      console.log("Database already has data.");
+    }
+  } catch (error) {
+    console.log("Error during database initialization: ", error);
+  }
 };

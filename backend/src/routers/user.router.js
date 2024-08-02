@@ -5,7 +5,7 @@ import { VerifyAuth, VerifyRole } from "../middlewares/verify.js";
 
 import * as userController from "../controllers/user.controller.js";
 
-import { RolesGroup } from "../settings.js";
+import { ROLES_GROUP } from "../settings.js";
 
 const router = express.Router();
 
@@ -18,19 +18,23 @@ router.route("/check-auth").get(userController.checkAuth);
 // Routes with authorization
 router
   .route("/all")
-  .get(VerifyAuth, VerifyRole(RolesGroup.staffAndAdmin), userController.getAll);
+  .get(
+    VerifyAuth,
+    VerifyRole(ROLES_GROUP.STAFF_AND_ADMIN),
+    userController.getAll
+  );
 router
   .route("/edit/:id")
   .get(
     VerifyAuth,
-    VerifyRole(RolesGroup.staffAndAdmin),
+    VerifyRole(ROLES_GROUP.STAFF_AND_ADMIN),
     userController.editItem
   );
 router
   .route("/create")
   .post(
     VerifyAuth,
-    VerifyRole(RolesGroup.staffAndAdmin),
+    VerifyRole(ROLES_GROUP.STAFF_AND_ADMIN),
     upload.single("img"),
     userController.createItem
   );
@@ -38,21 +42,21 @@ router
   .route("/update/:id")
   .post(
     VerifyAuth,
-    VerifyRole(RolesGroup.staffAndAdmin),
+    VerifyRole(ROLES_GROUP.STAFF_AND_ADMIN),
     userController.uptadeItem
   );
 router
   .route("/delete/:id")
   .get(
     VerifyAuth,
-    VerifyRole(RolesGroup.staffAndAdmin),
+    VerifyRole(ROLES_GROUP.STAFF_AND_ADMIN),
     userController.deleteItem
   );
 router
   .route("/report")
   .get(
     VerifyAuth,
-    VerifyRole(RolesGroup.staffAndAdmin),
+    VerifyRole(ROLES_GROUP.STAFF_AND_ADMIN),
     userController.generateReport
   );
 
