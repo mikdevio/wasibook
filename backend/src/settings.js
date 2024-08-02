@@ -27,6 +27,7 @@ export const __perfile_default = path.join(
   "assets/img/perfile_default.png"
 );
 
+// TODO: Change this way to point of roles groups for permissions
 export const RolesGroup = {
   all: ["customer", "staff", "admin"],
   onlyCustomer: ["customer"],
