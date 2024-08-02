@@ -1,10 +1,8 @@
 import express from "express";
-import upload from "../middlewares/upload.js";
 
 import { VerifyAuth, VerifyRole } from "../middlewares/verify.js";
 
-import * as roomController from "../controllers/room.controller.js";
-
+import * as invoiceController from "../controllers/invoice.controller.js";
 import { RolesGroup } from "../settings.js";
 
 const router = express.Router();
@@ -12,19 +10,23 @@ const router = express.Router();
 // Routes with authorization for all roles
 router
   .route("/:id")
-  .get(VerifyAuth, VerifyRole(RolesGroup.all), roomController.getItem);
-
-router
-  .route("/all")
-  .get(VerifyAuth, VerifyRole(RolesGroup.all), roomController.getAll);
+  .get(VerifyAuth, VerifyRole(RolesGroup.all, invoiceController.getItem));
 
 // Routes with authorization for Admins and Staff
+router
+  .route("/all")
+  .get(
+    VerifyAuth,
+    VerifyRole(RolesGroup.staffAndAdmin),
+    invoiceController.getAll
+  );
+
 router
   .route("/edit/:id")
   .get(
     VerifyAuth,
     VerifyRole(RolesGroup.staffAndAdmin),
-    roomController.editItem
+    invoiceController.editItem
   );
 
 router
@@ -32,8 +34,7 @@ router
   .post(
     VerifyAuth,
     VerifyRole(RolesGroup.staffAndAdmin),
-    upload.single("img"),
-    roomController.createItem
+    invoiceController.createItem
   );
 
 router
@@ -41,7 +42,7 @@ router
   .post(
     VerifyAuth,
     VerifyRole(RolesGroup.staffAndAdmin),
-    roomController.uptadeItem
+    invoiceController.uptadeItem
   );
 
 router
@@ -49,7 +50,7 @@ router
   .get(
     VerifyAuth,
     VerifyRole(RolesGroup.staffAndAdmin),
-    roomController.deleteItem
+    invoiceController.deleteItem
   );
 
 router
@@ -57,7 +58,7 @@ router
   .get(
     VerifyAuth,
     VerifyRole(RolesGroup.staffAndAdmin),
-    roomController.generateReport
+    invoiceController.generateReport
   );
 
 export default router;

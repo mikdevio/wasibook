@@ -2,6 +2,22 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
+const roomReservationSchema = new Schema({
+  room: {
+    type: Schema.Types.ObjectId,
+    ref: "Room",
+    required: true,
+  },
+  checkInDate: {
+    type: Date,
+    required: true,
+  },
+  checkOutDate: {
+    type: Date,
+    required: true,
+  },
+});
+
 const reservationSchema = new Schema(
   {
     user: {
@@ -9,17 +25,8 @@ const reservationSchema = new Schema(
       ref: "User",
       required: true,
     },
-    room: {
-      type: Schema.Types.ObjectId,
-      ref: "Room",
-      required: true,
-    },
-    checkInDate: {
-      type: Date,
-      required: true,
-    },
-    checkOutDate: {
-      type: Date,
+    rooms: {
+      type: [roomReservationSchema],
       required: true,
     },
     status: {

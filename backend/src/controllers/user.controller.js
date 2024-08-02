@@ -4,6 +4,8 @@ import path from "path";
 import User from "../models/user.model.js";
 import Blacklist from "../models/blacklist.model.js";
 
+import * as baseController from "../controllers/base.controller.js";
+
 import * as settings from "../settings.js";
 
 export const postLogin = async (req, res) => {
@@ -119,121 +121,6 @@ export const postSignup = async (req, res) => {
   res.end();
 };
 
-export const getAll = async (_, res) => {
-  try {
-    const usersList = await User.find({});
-    res.status(200).json({
-      data: usersList,
-      message: "List of all users.",
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: "error",
-      message: "Internal Server Error",
-    });
-  }
-};
-
-export const editItem = async (req, res) => {
-  const id = req.params.id;
-  try {
-    const data = await User.findById(id).exec();
-    res.status(200).json({
-      data: data,
-      message: "User info provided.",
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: "error",
-      message: "Internal Server Error",
-    });
-  }
-};
-
-export const createItem = async (req, res) => {
-  try {
-    // TODO: Check functionality upload middleware <User>
-    const newUser = new User({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      email: req.body.email,
-      password: req.body.password,
-      role: req.body.role,
-      img: {
-        data: fs.readFileSync(
-          path.join(settings.__dirname, "uploads/user", req.body["img.data"])
-        ),
-        contentType: "image/png",
-      },
-    });
-
-    const result = await newUser.save();
-
-    res.status(200).json({
-      data: data,
-      message: "User info provided.",
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: "error",
-      message: "Internal Server Error",
-    });
-  }
-};
-
-export const uptadeItem = async (req, res) => {
-  const userId = req.params.id;
-  try {
-    await User.findOneAndUpdate(
-      { _id: userId },
-      {
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        email: req.body.email,
-        password: req.body.password,
-        role: req.body.role,
-      }
-    );
-    res.status(200).send("User updated successfully");
-  } catch (error) {
-    res.status(500).json({
-      status: "error",
-      message: "Internal Server Error",
-    });
-  }
-};
-
-export const deleteItem = async (req, res) => {
-  const userId = req.params.id;
-  try {
-    await User.findOneAndDelete({ _id: userId });
-    res.status(200).json({
-      status: "success",
-      message: "User deleted from DB.",
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: "error",
-      message: "Internal Server Error",
-    });
-  }
-};
-
-export const generateReport = async (req, res) => {
-  try {
-    const userList = await User.find({});
-
-    // TODO: Add open pdf file functionality
-
-    res.status(200).json({
-      status: "success",
-      message: "User deleted from DB.",
-    });
-  } catch (error) {
-    res.status(500).send("Error on PDF report generation.");
-  }
-};
-
 export const checkAuth = async (req, res) => {
   const accessToken = req.cookies["SessionID"];
   if (accessToken) {
@@ -249,4 +136,28 @@ export const checkAuth = async (req, res) => {
   } else {
     res.status(401).json({ status: "unauthorized" });
   }
+};
+
+export const getAll = (req, res) => {
+  baseController.getAll(User, req, res);
+};
+
+export const editItem = (req, res) => {
+  baseController.editItem(User, req, res);
+};
+
+export const createItem = (req, res) => {
+  baseController.createItem(User, req, res);
+};
+
+export const uptadeItem = async (req, res) => {
+  baseController.updateItem(User, req, res);
+};
+
+export const deleteItem = async (req, res) => {
+  baseController.deleteItem(User, req, res);
+};
+
+export const generateReport = async (req, res) => {
+  baseController.generateReport(User, req, res);
 };

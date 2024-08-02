@@ -26,3 +26,11 @@ export const __perfile_default = path.join(
   __public,
   "assets/img/perfile_default.png"
 );
+
+export const RolesGroup = {
+  all: ["customer", "staff", "admin"],
+  onlyCustomer: ["customer"],
+  staffAndAdmin: ["staff", "admin"],
+  onlyAdmin: ["admin"],
+  onlyStaff: ["staff"],
+};
