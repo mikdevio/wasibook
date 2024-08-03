@@ -12,7 +12,6 @@ import {
 
 import icon from "../../assets/placeholder.svg";
 import { BookingData, ReservationData } from "../../types/Types";
-import "./ExtrasForm.css";
 
 interface BookingFormProps {
   bookingData: BookingData;

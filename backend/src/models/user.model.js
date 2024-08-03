@@ -126,7 +126,7 @@ export const Customer = UserBase.discriminator(
   new Schema({
     taxNumber: {
       type: String,
-      required: true,
+      required: false,
     },
     reservations: [
       {

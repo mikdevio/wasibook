@@ -1,13 +1,4 @@
-import React, { useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
-
-import NavigationBar from "../components/common/Navbar";
-import StepMenu from "../components/booking/StepMenu";
-import ExtrasForm from "../components/booking/ExtrasForm";
-import RoomSelectionForm from "../components/booking/RoomSelectionForm";
-import PaymentForm from "../components/booking/PaymentForm";
-import ConfirmationForm from "../components/booking/ConfirmationForm";
-import ReservationSummary from "../components/booking/ReservationSummary";
+import React from "react";
 
 import {
   BookingData,
@@ -17,6 +8,7 @@ import {
   ReservationData,
   StepState,
 } from "./../types/Types";
+import CustomerBoard from "../components/customer/CustomerBoard";
 
 const checkIn: CheckData = {
   checkType: "in",
@@ -83,8 +75,8 @@ const BookingExample: BookingData = {
 };
 
 const steps = [
-  { stepNumber: 1, stepLabel: "Dates & Rooms", stepState: StepState.Completed },
-  { stepNumber: 2, stepLabel: "Extras", stepState: StepState.InProcess },
+  { stepNumber: 1, stepLabel: "Dates & Rooms", stepState: StepState.InProcess },
+  { stepNumber: 2, stepLabel: "Extras", stepState: StepState.Incompleted },
   { stepNumber: 3, stepLabel: "Payment", stepState: StepState.Incompleted },
   {
     stepNumber: 4,
@@ -169,39 +161,9 @@ const rooms = [
 ];
 
 const Dashboard: React.FC = () => {
-  const [selectedStep, setSelectedStep] = useState<number>(1);
-
-  const renderStepComponent = () => {
-    switch (selectedStep) {
-      case 1:
-        return <RoomSelectionForm roomList={rooms} />;
-      case 2:
-        return <ExtrasForm bookingData={BookingExample} />;
-      case 3:
-        return <PaymentForm />;
-      case 4:
-        return <ConfirmationForm />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <>
-      <NavigationBar />
-      <Container className="mt-4">
-        <StepMenu
-          stepList={steps}
-          onStepSelect={setSelectedStep}
-          currentStep={selectedStep}
-        />
-        <Row className="row">
-          <Col className="col-md-8">{renderStepComponent()}</Col>
-          <Col className="col-md-4">
-            <ReservationSummary bookingData={BookingExample} />
-          </Col>
-        </Row>
-      </Container>
+      <CustomerBoard rooms={rooms} bookingData={BookingExample} steps={steps} />
     </>
   );
 };

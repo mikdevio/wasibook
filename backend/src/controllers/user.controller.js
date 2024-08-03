@@ -86,12 +86,12 @@ export const getLogout = async (req, res) => {
 
 export const postSignup = async (req, res) => {
   // Get params from body
-  const { first_name, last_name, email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
   try {
     // Create a user to save
     const newCustomer = new Customer({
-      first_name,
-      last_name,
+      firstName,
+      lastName,
       email,
       password,
     });
@@ -115,10 +115,12 @@ export const postSignup = async (req, res) => {
       message:
         "Thank you for registering with us. Your account has been successfully created.",
     });
-  } catch (err) {
+  } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       status: "error",
       message: "Internal Server Error",
+      error: error.message,
     });
   }
   res.end();

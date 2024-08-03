@@ -1,6 +1,7 @@
 import React from "react";
-import PriceSummary from "./PriceSummary";
 import { Card, Col, Container, Row } from "react-bootstrap";
+
+import PriceSummary from "./PriceSummary";
 import { BookingData } from "../../types/Types";
 
 import { format } from "date-fns";

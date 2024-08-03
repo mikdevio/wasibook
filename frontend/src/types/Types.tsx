@@ -42,3 +42,26 @@ export type StepData = {
   stepLabel: string;
   stepState: StepState;
 };
+
+export type UserData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  img: string; // mejorar tipo
+  phone: string;
+  address: string;
+  role: string;
+};
+
+export type CustomerData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  img: String; // mejorar tipo
+  phone: string;
+  address: string;
+  taxNumber: string;
+  reservations: ReservationData[];
+};

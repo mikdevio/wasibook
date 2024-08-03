@@ -1,5 +1,6 @@
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import { StarFill } from "react-bootstrap-icons";
+
 import { RoomData } from "../../types/Types";
 
 interface RoomSelectionFormProps {
@@ -12,7 +13,7 @@ const RoomSelectionForm: React.FC<RoomSelectionFormProps> = (
   const { roomList } = props;
 
   return (
-    <Container>
+    <>
       <Card className="shadow p-3 h-100">
         <Row className="justify-content-center">
           {roomList.map((room, index) => (
@@ -22,7 +23,7 @@ const RoomSelectionForm: React.FC<RoomSelectionFormProps> = (
           ))}
         </Row>
       </Card>
-    </Container>
+    </>
   );
 };
 
