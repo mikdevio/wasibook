@@ -1,4 +1,4 @@
-import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
 import { StarFill } from "react-bootstrap-icons";
 
 import { RoomData } from "../../types/Types";
@@ -16,30 +16,37 @@ const RoomSelectionForm: React.FC<RoomSelectionFormProps> = (
 
   return (
     <>
-      <Card className="shadow p-3 h-100">
-        <Row className="justify-content-start">
-          {roomList.length !== 0 &&
-            roomList.map((room, index) => (
-              <Col
-                key={index}
-                md={4}
-                className="d-flex align-items-stretch mb-4"
-              >
-                <RoomCard {...room} />
-              </Col>
-            ))}
-          {roomList.length === 0 && (
-            <span className="mt-5 text-secondary text-center fs-4">
-              No hay habitaciones registradas
-            </span>
-          )}
-        </Row>
+      <Card className="shadow pt-1 h-100">
+        <Card.Header>
+          <Card.Title>Rooms</Card.Title>
+        </Card.Header>
+        <Card.Body>
+          <Row className="justify-content-start">
+            {roomList.length !== 0 &&
+              roomList.map((room, index) => (
+                <Col
+                  key={index}
+                  md={4}
+                  className="d-flex align-items-stretch mb-4"
+                >
+                  <RoomCard {...room} />
+                </Col>
+              ))}
+            {roomList.length === 0 && (
+              <span className="mt-5 text-secondary text-center fs-4">
+                No hay habitaciones registradas
+              </span>
+            )}
+          </Row>
+        </Card.Body>
+        <Card.Footer></Card.Footer>
       </Card>
     </>
   );
 };
 
 interface RoomCardProps {
+  code: string;
   img: any;
   stars: number;
   roomType: string;
@@ -48,7 +55,7 @@ interface RoomCardProps {
 }
 
 const RoomCard: React.FC<RoomCardProps> = (props: RoomCardProps) => {
-  const { img, roomType, stars, description, price } = props;
+  const { code, img, roomType, stars, description, price } = props;
   const [imgSrc, setImgSrc] = useState<any | null>(null);
 
   const starsCount = Array.from({ length: stars });
@@ -86,12 +93,19 @@ const RoomCard: React.FC<RoomCardProps> = (props: RoomCardProps) => {
       )}
       <Card.Body as={Container} className="px-3">
         <Row>
-          <Card.Title>{roomType}</Card.Title>
+          <Col>
+            <Card.Title>{`Room ${code}`}</Card.Title>
+          </Col>
+          <Col className="col-4 text-end">
+            <Badge bg="secondary">{roomType}</Badge>
+          </Col>
         </Row>
         <Row>
-          <Card.Text className="text-truncate-multiline">
-            {description}
-          </Card.Text>
+          <Col>
+            <Card.Text className="text-truncate-multiline">
+              {description}
+            </Card.Text>
+          </Col>
         </Row>
         <Row>
           <Col>

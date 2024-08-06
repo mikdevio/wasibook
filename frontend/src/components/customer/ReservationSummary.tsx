@@ -7,8 +7,6 @@ import "react-datetime/css/react-datetime.css";
 import PriceSummary from "./PriceSummary";
 import { BookingData, RoomReservedData } from "../../types/Types";
 
-import { format } from "date-fns";
-
 interface CheckBlockProps {
   check: string;
 }
@@ -126,7 +124,7 @@ const RoomReservationCard: React.FC<RoomReservationCardProps> = (
 };
 
 interface ReservationSummaryProps {
-  bookingData: BookingData;
+  bookingData?: BookingData;
 }
 
 const ReservationSummary: React.FC<ReservationSummaryProps> = (
@@ -138,10 +136,18 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = (
     <Card className="shadow">
       <Card.Body>
         <Card.Title>Reservation Summary</Card.Title>
-        {bookingData.reservationList.map((r, id) => (
-          <RoomReservationCard id={id} reservation={r} />
-        ))}
-        <PriceSummary prices_dict={bookingData.pricesDictionary} />
+        {bookingData ? (
+          bookingData.reservationList.map((r, id) => (
+            <RoomReservationCard id={id} reservation={r} />
+          ))
+        ) : (
+          <span className="mt-5 text-secondary text-center fs-5">
+            No hay habitaciones reservadas
+          </span>
+        )}
+        <PriceSummary
+          prices_dict={bookingData ? bookingData.pricesDictionary : undefined}
+        />
       </Card.Body>
     </Card>
   );

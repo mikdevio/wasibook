@@ -14,7 +14,7 @@ import icon from "../../assets/placeholder.svg";
 import { BookingData, RoomReservedData } from "../../types/Types";
 
 interface BookingFormProps {
-  bookingData: BookingData;
+  bookingData?: BookingData;
 }
 
 const ExtrasForm: React.FC<BookingFormProps> = (props: BookingFormProps) => {
@@ -22,9 +22,13 @@ const ExtrasForm: React.FC<BookingFormProps> = (props: BookingFormProps) => {
   return (
     <div className="card shadow">
       <div className="card-body">
-        {bookingData.reservationList.map((reserv) => (
-          <ReservationCard imgURL={icon} reservationData={reserv} />
-        ))}
+        {bookingData ? (
+          bookingData.reservationList.map((reserv) => (
+            <ReservationCard imgURL={icon} reservationData={reserv} />
+          ))
+        ) : (
+          <span>No hay habiaciones reservadas </span>
+        )}
         <DisclaimerArea />
         <DetailsForm />
         <ExtrasArea />

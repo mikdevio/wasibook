@@ -4,7 +4,7 @@ import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import { PricesDictionary } from "../../types/Types";
 
 interface PriceSummaryProps {
-  prices_dict: PricesDictionary;
+  prices_dict?: PricesDictionary;
 }
 
 const PriceSummary: React.FC<PriceSummaryProps> = (
@@ -14,9 +14,15 @@ const PriceSummary: React.FC<PriceSummaryProps> = (
   return (
     <Container className="p-0 mt-4">
       <Card.Title>Your Price Summary</Card.Title>
-      {Object.entries(prices_dict).map(([id, priceData]) => (
-        <PriceRow key={id} tag_name={priceData.tag} value={priceData.value} />
-      ))}
+      {prices_dict
+        ? Object.entries(prices_dict).map(([id, priceData]) => (
+            <PriceRow
+              key={id}
+              tag_name={priceData.tag}
+              value={priceData.value}
+            />
+          ))
+        : null}
       <Row className="mt-4 px-2">
         <Button variant="primary" className="">
           Request to book

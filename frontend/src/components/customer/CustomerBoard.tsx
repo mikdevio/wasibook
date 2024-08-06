@@ -12,7 +12,7 @@ import { BookingData, RoomData, StepData } from "../../types/Types";
 
 interface CustomerBoardProps {
   rooms: RoomData[];
-  bookingData: BookingData;
+  bookingData?: BookingData | undefined;
   steps: StepData[];
 }
 
@@ -27,7 +27,9 @@ const CustomerBoard: React.FC<CustomerBoardProps> = (
       case 1:
         return <RoomSelectionForm roomList={rooms} />;
       case 2:
-        return <ExtrasForm bookingData={bookingData} />;
+        return (
+          <ExtrasForm bookingData={bookingData ? bookingData : undefined} />
+        );
       case 3:
         return <PaymentForm />;
       case 4:

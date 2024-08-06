@@ -9,10 +9,11 @@ import {
   StepState,
   CheckType,
 } from "./../types/Types";
-import CustomerBoard from "../components/customer/CustomerBoard";
-import { useAuth } from "../components/common/AuthContext";
-import AdminBoard from "../components/admin/AdminBoard";
 import { roomGetAll } from "../services/hadlerData";
+import AdminBoard from "../components/admin/AdminBoard";
+import { useAuth } from "../components/common/AuthContext";
+import CustomerBoard from "../components/customer/CustomerBoard";
+import { ReservationProvider } from "../components/common/BookingContext";
 
 const checkIn: CheckData = {
   type: CheckType.IN,
@@ -114,11 +115,13 @@ const Dashboard: React.FC = () => {
   return (
     <>
       {user.role !== "admin" && (
-        <CustomerBoard
-          rooms={rooms}
-          bookingData={BookingExample}
-          steps={steps}
-        />
+        <ReservationProvider>
+          <CustomerBoard
+            rooms={rooms}
+            bookingData={BookingExample}
+            steps={steps}
+          />
+        </ReservationProvider>
       )}
       {user.role === "admin" && (
         <AdminBoard rooms={rooms} bookingData={BookingExample} steps={steps} />
