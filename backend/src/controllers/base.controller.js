@@ -22,15 +22,15 @@ export const getItem = async (Model, req, res) => {
 export const getAll = async (Model, req, res) => {
   try {
     const itemList = await Model.find({});
+
     res.status(200).json({
       data: itemList,
-      nessage: `All ${Model.modelName}s list.`,
+      message: `All ${Model.modelName}s list.`,
     });
   } catch (error) {
     res.status(500).json({
-      status: "error",
       message: "Internal server error.",
-      error: error.message,
+      error: error,
     });
   }
 };
@@ -116,7 +116,8 @@ export const updateItem = async (Model, req, res) => {
     const updatedItem = await Model.findOneAndUpdate(
       { _id: itemId },
       updateData,
-      { new: true } // Esta opción devuelve el documento actualizado
+      { new: true }
+      // Esta opción devuelve el documento actualizado
     );
 
     if (!updatedItem) {

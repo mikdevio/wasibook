@@ -1,4 +1,7 @@
+import fs from "fs";
 import mongoose from "mongoose";
+
+import * as settings from "../settings.js";
 
 const Schema = mongoose.Schema;
 
@@ -36,9 +39,18 @@ const roomSchema = new Schema(
     img: {
       data: {
         type: Buffer,
-        default: null,
+        default: fs.readFileSync(settings.DEFAULT_ROOM_IMG),
       },
       contentType: String,
+    },
+    stars: {
+      type: Number,
+      required: false,
+      default: 1,
+    },
+    taxes: {
+      type: [String],
+      required: false,
     },
   },
   { timestamps: true }

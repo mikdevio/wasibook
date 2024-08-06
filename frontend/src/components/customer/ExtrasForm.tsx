@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 
 import icon from "../../assets/placeholder.svg";
-import { BookingData, ReservationData } from "../../types/Types";
+import { BookingData, RoomReservedData } from "../../types/Types";
 
 interface BookingFormProps {
   bookingData: BookingData;
@@ -36,7 +36,7 @@ const ExtrasForm: React.FC<BookingFormProps> = (props: BookingFormProps) => {
 
 interface ReservationCardProps {
   imgURL: string;
-  reservationData: ReservationData;
+  reservationData: RoomReservedData;
 }
 
 const ReservationCard: React.FC<ReservationCardProps> = (

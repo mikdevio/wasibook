@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Form,
-  Button,
-  Alert,
-  Container,
-  ButtonGroup,
-  Card,
-} from "react-bootstrap";
+import { Form, Button, Container, ButtonGroup, Card } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -15,12 +8,14 @@ import InputGroup from "./InputGroup";
 import { userLoginForm, userLoginSchema } from "../schemas/user";
 import { userLogin } from "../services/auth";
 import DismissibleAlert from "./common/Alert";
+import { useAuth } from "./common/AuthContext";
 
 const LoginForm: React.FC = () => {
   const methods = useForm<userLoginForm>({
     resolver: zodResolver(userLoginSchema),
   });
 
+  const { setUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isLogin, setIsLogin] = useState<boolean | null>(null);
@@ -28,7 +23,7 @@ const LoginForm: React.FC = () => {
 
   const onSubmit = async (data: userLoginForm) => {
     try {
-      const response = await userLogin(data.email, data.password);
+      const response = await userLogin(data.email, data.password, setUser);
       if (response) {
         setMessage("Login successfull");
         setIsLogin(true);

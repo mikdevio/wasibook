@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.model.js";
+import { UserBase } from "../models/user.model.js";
 import Blacklist from "../models/blacklist.model.js";
 
 import * as settings from "../settings.js";
@@ -27,11 +27,11 @@ export async function VerifyAuth(req, res, next) {
           .json({ message: "This session has expired. Please login" });
       }
 
-      // const {id} = decoded;
-      // const user = await User.findById(id);
-      // const { password, ...data} = user._doc;
+      const { id } = decoded;
+      const user = await UserBase.findById(id);
+      const { password, ...data } = user._doc;
 
-      // req.user = data;
+      req.user = data;
       next();
     });
   } catch (error) {

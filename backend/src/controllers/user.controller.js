@@ -40,6 +40,7 @@ export const postLogin = async (req, res) => {
   res.status(200).json({
     status: 200,
     message: "Ok. New token assigned.",
+    user: userFound,
   });
   console.log(`Usuario ${userFound.email} logeado`);
 };
@@ -79,7 +80,8 @@ export const getLogout = async (req, res) => {
     console.log(error);
     res.status(500).json({
       status: "error",
-      message: "Internal Server Error: " + error,
+      message: "Internal Server Error: ",
+      error: error,
     });
   }
 };
@@ -141,6 +143,10 @@ export const checkAuth = async (req, res) => {
   } else {
     res.status(401).json({ status: "Unauthorized" });
   }
+};
+
+export const getItem = (req, res) => {
+  baseController.getItem(User, req, res);
 };
 
 export const getAll = (req, res) => {

@@ -8,10 +8,11 @@ import ProtectedRoute from "./components/common/ProtectedRoute";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "./App.css";
+import { AuthProvider } from "./components/common/AuthContext";
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -23,7 +24,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
-    </>
+    </AuthProvider>
   );
 }
 

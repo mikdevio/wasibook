@@ -48,6 +48,12 @@ const userBaseSchema = new Schema(
       required: false,
       max: 52,
     },
+    role: {
+      type: String,
+      enum: settings.ROLES_GROUP.ALL,
+      default: "customer",
+      required: true,
+    },
   },
   { timestamps: true },
   { discriminationKey: "kind", collection: "Users" }
@@ -112,11 +118,18 @@ export const UserBase = mongoose.model("UserBase", userBaseSchema);
 export const User = UserBase.discriminator(
   "User",
   new Schema({
-    role: {
+    employeeId: {
       type: String,
-      enum: settings.ROLES_GROUP.ALL,
-      default: "customer",
       required: true,
+      unique: true,
+    },
+    position: {
+      type: String,
+      requiered: false,
+    },
+    permisions: {
+      type: [String],
+      requiered: false,
     },
   })
 );
@@ -134,5 +147,14 @@ export const Customer = UserBase.discriminator(
         ref: "Reservation",
       },
     ],
+    loyaltyPoints: {
+      type: Number,
+      requiered: false,
+      default: 0,
+    },
+    preferences: {
+      type: [String],
+      requiered: false,
+    },
   })
 );

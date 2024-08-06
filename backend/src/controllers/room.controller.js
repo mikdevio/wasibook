@@ -1,9 +1,6 @@
 import Room from "../models/room.model.js";
-import * as settings from "../settings.js";
 
 import * as baseController from "../controllers/base.controller.js";
-
-// TODO: Implement functionalities
 
 export const getItem = (req, res) => {
   baseController.getItem(Room, req, res);

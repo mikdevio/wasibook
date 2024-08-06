@@ -27,6 +27,11 @@ export const DEFAULT_PERFILE_IMG = path.join(
   "assets/img/perfile_default.png"
 );
 
+export const DEFAULT_ROOM_IMG = path.join(
+  PUBLIC_DIR,
+  "assets/img/room_default.png"
+);
+
 // TODO: Change this way to point of roles groups for permissions
 export const ROLES_GROUP = {
   ALL: ["customer", "staff", "admin"],

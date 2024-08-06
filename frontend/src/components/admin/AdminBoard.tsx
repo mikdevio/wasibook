@@ -17,8 +17,7 @@ const AdminBoard: React.FC<AdminBoardProps> = (props: AdminBoardProps) => {
   return (
     <>
       <NavigationBar />
-      <Container className="mt-4">
-        <h4>Admin Board</h4>
+      <Container fluid>
         <Sidebar />
       </Container>
     </>

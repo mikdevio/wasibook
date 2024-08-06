@@ -7,34 +7,44 @@ export type PricesDictionary = {
   [id: string]: PriceData;
 };
 
+export enum CheckType {
+  IN = "in",
+  OUT = "out",
+}
+
 export type CheckData = {
-  checkType: string;
+  type: CheckType;
   date: Date;
 };
 
-export type RoomData = {
-  image: string;
-  roomCode: string;
-  stars: number;
-  room: string;
-  description: string;
+export interface RoomData {
+  code: string;
+  roomType: "Single" | "Double" | "Suite" | "Deluxe";
   price: number;
-};
+  amenities: string[];
+  description: string;
+  availability: boolean;
+  img: { type: string; data: number[] };
+  stars: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
-export type ReservationData = {
+export type RoomReservedData = {
   checkinData: CheckData;
   checkoutData: CheckData;
   roomData: RoomData;
 };
+
 export type BookingData = {
-  reservationList: ReservationData[];
+  reservationList: RoomReservedData[];
   pricesDictionary: PricesDictionary;
 };
 
 export enum StepState {
-  Incompleted,
-  InProcess,
-  Completed,
+  INCOMPLETED,
+  IN_PROCESS,
+  COMPLETED,
 }
 
 export type StepData = {
@@ -63,5 +73,5 @@ export type CustomerData = {
   phone: string;
   address: string;
   taxNumber: string;
-  reservations: ReservationData[];
+  reservations: RoomReservedData[];
 };

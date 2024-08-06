@@ -15,7 +15,8 @@ export const checkAuth = async (): Promise<boolean> => {
 
 export const userLogin = async (
   email: string,
-  password: string
+  password: string,
+  setUser: (user: any) => void
 ): Promise<boolean> => {
   try {
     const response = await fetch("http://localhost:3000/user/login", {
@@ -29,8 +30,10 @@ export const userLogin = async (
 
     // TODO: Passing user autheticated data to dashboard
     const data = await response.json();
+    console.log(data);
 
     if (response.ok) {
+      setUser(data.user);
       return response.ok;
     } else {
       return false;
@@ -69,6 +72,27 @@ export const userSignup = async (
     }
   } catch (error) {
     console.error("Error while signing up: ", error);
+    return false;
+  }
+};
+
+export const userLogout = async (): Promise<boolean> => {
+  try {
+    const response = await fetch("http://localhost:3000/user/logout", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      return response.ok;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error while loging out: ", error);
     return false;
   }
 };

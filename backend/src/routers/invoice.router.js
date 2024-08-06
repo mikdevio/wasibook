@@ -7,11 +7,6 @@ import { ROLES_GROUP } from "../settings.js";
 
 const router = express.Router();
 
-// Routes with authorization for all roles
-router
-  .route("/:id")
-  .get(VerifyAuth, VerifyRole(ROLES_GROUP.ALL, invoiceController.getItem));
-
 // Routes with authorization for Admins and Staff
 router
   .route("/all")
@@ -60,5 +55,10 @@ router
     VerifyRole(ROLES_GROUP.STAFF_AND_ADMIN),
     invoiceController.generateReport
   );
+
+// Routes with authorization for all roles
+router
+  .route("/:id")
+  .get(VerifyAuth, VerifyRole(ROLES_GROUP.ALL, invoiceController.getItem));
 
 export default router;

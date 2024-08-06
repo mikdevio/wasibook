@@ -1,93 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 
+import Datetime from "react-datetime";
+import "react-datetime/css/react-datetime.css";
+
 import PriceSummary from "./PriceSummary";
-import { BookingData } from "../../types/Types";
+import { BookingData, RoomReservedData } from "../../types/Types";
 
 import { format } from "date-fns";
 
-interface ReservationSummaryProps {
-  bookingData: BookingData;
-}
-
-const ReservationSummary: React.FC<ReservationSummaryProps> = (
-  props: ReservationSummaryProps
-) => {
-  const { bookingData } = props;
-
-  const formatDate = (date: Date) => {
-    return format(date, "eee, MMM dd yyyy");
-  };
-
-  const formatTime = (date: Date) => {
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
-
-  const getStayLength = (dateIn: Date, dateOut: Date) => {
-    return dateOut.getDay() - dateIn.getDay();
-  };
-
-  return (
-    <Card className="shadow">
-      <Card.Body>
-        <Card.Title>Reservation Summary</Card.Title>
-        {bookingData.reservationList.map((reserv) => (
-          <Container className="mt-3 border-bottom">
-            <Row className="justify-content-between">
-              <Col className="m-0 p-0">
-                <CheckBlock
-                  check="in"
-                  date={formatDate(reserv.checkinData.date)}
-                  time={formatTime(reserv.checkinData.date)}
-                />
-              </Col>
-              <Col>
-                <CheckBlock
-                  check="out"
-                  date={formatDate(reserv.checkoutData.date)}
-                  time={formatTime(reserv.checkoutData.date)}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <StayLabel
-                days={`${getStayLength(
-                  reserv.checkinData.date,
-                  reserv.checkoutData.date
-                )} days`}
-              />
-            </Row>
-            <Row>
-              <RoomSelectedLabel
-                code={reserv.roomData.roomCode}
-                description={reserv.roomData.description}
-              />
-            </Row>
-          </Container>
-        ))}
-        <PriceSummary prices_dict={bookingData.pricesDictionary} />
-      </Card.Body>
-    </Card>
-  );
-};
-
 interface CheckBlockProps {
   check: string;
-  date: string;
-  time: string;
 }
 
 const CheckBlock: React.FC<CheckBlockProps> = (props: CheckBlockProps) => {
-  const { check, date, time } = props;
+  const { check } = props;
+  const [dateTime, setDateTime] = useState<Date>(new Date());
+
+  const handleDateChange = (date: any) => {
+    setDateTime(date);
+  };
+
   return (
-    <Container>
+    <Container className="p-0">
       <Row>
-        <Card.Text className="p-0 fw-bold">Check-{check}:</Card.Text>
+        <Col>
+          <Card.Text className="p-0 fw-bold">Check-{check}:</Card.Text>
+        </Col>
       </Row>
-      <Row>{date}</Row>
-      <Row>{time}</Row>
+      <Row>
+        <Col>
+          <Datetime value={dateTime} onChange={handleDateChange} />
+        </Col>
+      </Row>
     </Container>
   );
 };
@@ -135,6 +80,70 @@ const RoomSelectedLabel: React.FC<RoomSelectedLabelProps> = (
         </Col>
       </Row>
     </Container>
+  );
+};
+
+interface RoomReservationCardProps {
+  id: number;
+  reservation: RoomReservedData;
+}
+
+const RoomReservationCard: React.FC<RoomReservationCardProps> = (
+  props: RoomReservationCardProps
+) => {
+  const { id, reservation } = props;
+
+  const getStayLength = (dateIn: Date, dateOut: Date) => {
+    return dateOut.getDay() - dateIn.getDay();
+  };
+
+  return (
+    <Container key={id} className="mt-3 border-bottom">
+      <Row className="justify-content-between">
+        <Col className="m-0 p-0">
+          <CheckBlock check="in" />
+        </Col>
+        <Col>
+          <CheckBlock check="out" />
+        </Col>
+      </Row>
+      <Row>
+        <StayLabel
+          days={`${getStayLength(
+            reservation.checkinData.date,
+            reservation.checkoutData.date
+          )} days`}
+        />
+      </Row>
+      <Row>
+        <RoomSelectedLabel
+          code={reservation.roomData.code}
+          description={reservation.roomData.description}
+        />
+      </Row>
+    </Container>
+  );
+};
+
+interface ReservationSummaryProps {
+  bookingData: BookingData;
+}
+
+const ReservationSummary: React.FC<ReservationSummaryProps> = (
+  props: ReservationSummaryProps
+) => {
+  const { bookingData } = props;
+
+  return (
+    <Card className="shadow">
+      <Card.Body>
+        <Card.Title>Reservation Summary</Card.Title>
+        {bookingData.reservationList.map((r, id) => (
+          <RoomReservationCard id={id} reservation={r} />
+        ))}
+        <PriceSummary prices_dict={bookingData.pricesDictionary} />
+      </Card.Body>
+    </Card>
   );
 };
 

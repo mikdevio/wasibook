@@ -16,6 +16,6 @@ router.use("/user", userRouter);
 router.use("/room", roomRouter);
 router.use("/reservation", reservationRouter);
 router.use("/invoice", invoiceRouter);
-router.use("/tax", invoiceRouter);
+router.use("/tax", taxRouter);
 
 export default router;

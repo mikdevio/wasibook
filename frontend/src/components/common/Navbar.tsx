@@ -2,8 +2,23 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { NavDropdown } from "react-bootstrap";
+import { userLogout } from "../../services/auth";
+import { useNavigate } from "react-router-dom";
 
 function NavigationBar() {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const response = await userLogout();
+      if (response) {
+        navigate("/login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Navbar expand="lg" bg="dark" data-bs-theme="dark">
       <Container>
@@ -29,7 +44,9 @@ function NavigationBar() {
               <NavDropdown.Item href="#action/3.1">Perfil</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">Settings</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">Logout</NavDropdown.Item>
+              <NavDropdown.Item href="#" onClick={handleLogout}>
+                Logout
+              </NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

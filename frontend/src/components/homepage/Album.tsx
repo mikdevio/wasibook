@@ -1,28 +1,34 @@
 import React from "react";
+import { Card } from "react-bootstrap";
 
 const Album: React.FC = () => {
   const productos = [
     {
+      img: "/img/room_001.jpeg",
       placeholder: "Producto1",
       thumbnail: "Pr1",
       description: "Estas es la descricion del producto 1",
     },
     {
+      img: "/img/room_001.jpeg",
       placeholder: "Producto2",
       thumbnail: "Pr2",
       description: "Estas es la descricion del producto 2",
     },
     {
+      img: "/img/room_001.jpeg",
       placeholder: "Producto3",
       thumbnail: "Pr3",
       description: "Estas es la descricion del producto 3",
     },
     {
+      img: "/img/room_001.jpeg",
       placeholder: "Producto4",
       thumbnail: "Pr4",
       description: "Estas es la descricion del producto 4",
     },
     {
+      img: "/img/room_001.jpeg",
       placeholder: "Producto5",
       thumbnail: "Pr5",
       description: "Estas es la descricion del producto 5",
@@ -35,6 +41,7 @@ const Album: React.FC = () => {
         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
           {productos.map((p) => (
             <AlbumEntry
+              img={p.img}
               placeholder={p.placeholder}
               thumbnail={p.thumbnail}
               description={p.description}
@@ -47,34 +54,20 @@ const Album: React.FC = () => {
 };
 
 interface AlbumEntryProps {
+  img: string;
   placeholder: string;
   thumbnail: string;
   description: string;
 }
 
 const AlbumEntry: React.FC<AlbumEntryProps> = (props: AlbumEntryProps) => {
-  const { placeholder, thumbnail, description } = props;
+  const { img, placeholder, thumbnail, description } = props;
 
   return (
     <div className="col">
-      <div className="card shadow-sm">
-        <svg
-          className="bd-placeholder-img card-img-top"
-          width="100%"
-          height="225"
-          xmlns="http://www.w3.org/2000/svg"
-          role="img"
-          aria-label="Placeholder: Thumbnail"
-          preserveAspectRatio="xMidYMid slice"
-          focusable="false"
-        >
-          <title>{placeholder}</title>
-          <rect width="100%" height="100%" fill="#55595c" />
-          <text x="50%" y="50%" fill="#eceeef" dy=".3em">
-            {thumbnail}
-          </text>
-        </svg>
-        <div className="card-body">
+      <Card className="card shadow-sm">
+        <Card.Img variant="top" src={img} />
+        <Card.Body className="card-body">
           <p className="card-text">{description}</p>
           <div className="d-flex justify-content-between align-items-center">
             <div className="btn-group">
@@ -93,8 +86,8 @@ const AlbumEntry: React.FC<AlbumEntryProps> = (props: AlbumEntryProps) => {
             </div>
             <small className="text-body-secondary">9 mins</small>
           </div>
-        </div>
-      </div>
+        </Card.Body>
+      </Card>
     </div>
   );
 };

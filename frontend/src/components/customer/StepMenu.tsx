@@ -16,8 +16,9 @@ const StepMenu: React.FC<StepMenuProps> = ({
   return (
     <Container className="mb-4 text-center">
       <Row className="justify-content-center align-items-center">
-        {stepList.map((step) => (
+        {stepList.map((step, id) => (
           <StepBox
+            key={id}
             stepNumber={step.stepNumber}
             stepLabel={step.stepLabel}
             stepState={step.stepState}
@@ -39,17 +40,17 @@ interface StepBoxProps {
 }
 
 const StepStyle = {
-  [StepState.Incompleted]: {
+  [StepState.INCOMPLETED]: {
     background: "#f0f0f0",
     number_color: "#aba9a9",
     label_color: "#aba9a9",
   },
-  [StepState.InProcess]: {
+  [StepState.IN_PROCESS]: {
     background: "#0d6efd",
     number_color: "#fff",
     label_color: "#0d6efd",
   },
-  [StepState.Completed]: {
+  [StepState.COMPLETED]: {
     background: "#6bff72",
     number_color: "#fff",
     label_color: "#009107",
@@ -73,7 +74,7 @@ const StepBox: React.FC<StepBoxProps> = (props) => {
         }}
         onClick={() => onStepSelect(stepNumber)}
       >
-        {stepState === StepState.Completed ? (
+        {stepState === StepState.COMPLETED ? (
           <Check size={32} className="icon" />
         ) : (
           stepNumber

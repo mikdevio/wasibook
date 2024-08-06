@@ -23,6 +23,7 @@ router
     VerifyRole(ROLES_GROUP.STAFF_AND_ADMIN),
     userController.getAll
   );
+router.route("/:id").get(VerifyAuth, userController.getItem);
 router
   .route("/edit/:id")
   .get(

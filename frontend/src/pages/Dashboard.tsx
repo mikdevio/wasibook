@@ -1,41 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   BookingData,
   PricesDictionary,
   CheckData,
   RoomData,
-  ReservationData,
+  RoomReservedData,
   StepState,
+  CheckType,
 } from "./../types/Types";
 import CustomerBoard from "../components/customer/CustomerBoard";
+import { useAuth } from "../components/common/AuthContext";
+import AdminBoard from "../components/admin/AdminBoard";
+import { roomGetAll } from "../services/hadlerData";
 
 const checkIn: CheckData = {
-  checkType: "in",
+  type: CheckType.IN,
   date: new Date("2022-05-22T16:00:00"),
 };
 
 const checkOut: CheckData = {
-  checkType: "in",
+  type: CheckType.OUT,
   date: new Date("2022-05-25T11:00:00"),
 };
 
 const roomOne: RoomData = {
-  image: "url/img/1.jpeg",
-  roomCode: "A001",
+  img: { type: "url/img/1.jpeg", data: [] },
+  code: "A001",
   stars: 4,
-  room: "Singler",
+  roomType: "Suite",
   price: 12.5,
   description: "King bed stylish Apartment with Loft style family room",
+  availability: true,
+  amenities: [],
 };
 
 const roomTwo: RoomData = {
-  image: "url/img/2.jpeg",
-  roomCode: "A002",
+  img: { type: "url/img/2.jpeg", data: [] },
+  code: "A002",
   stars: 3,
-  room: "Duplex",
+  roomType: "Single",
   price: 25.5,
   description: "King bed stylish Apartment with Loft style family room",
+  availability: true,
+  amenities: [],
 };
 
 const Prices: PricesDictionary = {
@@ -57,13 +65,13 @@ const Prices: PricesDictionary = {
   },
 };
 
-const reservationOne: ReservationData = {
+const reservationOne: RoomReservedData = {
   checkinData: checkIn,
   checkoutData: checkOut,
   roomData: roomOne,
 };
 
-const reservationTwo: ReservationData = {
+const reservationTwo: RoomReservedData = {
   checkinData: checkIn,
   checkoutData: checkOut,
   roomData: roomTwo,
@@ -75,95 +83,46 @@ const BookingExample: BookingData = {
 };
 
 const steps = [
-  { stepNumber: 1, stepLabel: "Dates & Rooms", stepState: StepState.InProcess },
-  { stepNumber: 2, stepLabel: "Extras", stepState: StepState.Incompleted },
-  { stepNumber: 3, stepLabel: "Payment", stepState: StepState.Incompleted },
+  {
+    stepNumber: 1,
+    stepLabel: "Dates & Rooms",
+    stepState: StepState.IN_PROCESS,
+  },
+  { stepNumber: 2, stepLabel: "Extras", stepState: StepState.INCOMPLETED },
+  { stepNumber: 3, stepLabel: "Payment", stepState: StepState.INCOMPLETED },
   {
     stepNumber: 4,
     stepLabel: "Confirmation",
-    stepState: StepState.Incompleted,
-  },
-];
-
-const rooms = [
-  {
-    image: "url/img/1.jpeg",
-    roomCode: "A001",
-    stars: 4,
-    room: "Singler",
-    description: "Des1",
-    price: 12.5,
-  },
-  {
-    image: "url/img/2.jpeg",
-    roomCode: "A002",
-    stars: 3,
-    room: "Duplex",
-    description: "Des2",
-    price: 25.5,
-  },
-  {
-    image: "url/img/3.jpeg",
-    roomCode: "A003",
-    stars: 4,
-    room: "Duplex King",
-    description: "Des3",
-    price: 50.6,
-  },
-  {
-    image: "url/img/3.jpeg",
-    roomCode: "A003",
-    stars: 4,
-    room: "Duplex King",
-    description: "Des3",
-    price: 50.6,
-  },
-  {
-    image: "url/img/3.jpeg",
-    roomCode: "A003",
-    stars: 4,
-    room: "Duplex King",
-    description: "Des3",
-    price: 50.6,
-  },
-  {
-    image: "url/img/3.jpeg",
-    roomCode: "A003",
-    stars: 4,
-    room: "Duplex King",
-    description: "Des3",
-    price: 50.6,
-  },
-  {
-    image: "url/img/3.jpeg",
-    roomCode: "A003",
-    stars: 4,
-    room: "Duplex King",
-    description: "Des3",
-    price: 50.6,
-  },
-  {
-    image: "url/img/3.jpeg",
-    roomCode: "A003",
-    stars: 4,
-    room: "Duplex King",
-    description: "Des3",
-    price: 50.6,
-  },
-  {
-    image: "url/img/3.jpeg",
-    roomCode: "A003",
-    stars: 4,
-    room: "Duplex King",
-    description: "Des3",
-    price: 50.6,
+    stepState: StepState.INCOMPLETED,
   },
 ];
 
 const Dashboard: React.FC = () => {
+  const { user } = useAuth();
+  const [rooms, setRooms] = useState<RoomData[]>([]);
+  console.log(user);
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      const roomsData = await roomGetAll();
+      setRooms(roomsData);
+    };
+
+    fetchRooms();
+  }, []);
+
   return (
     <>
-      <CustomerBoard rooms={rooms} bookingData={BookingExample} steps={steps} />
+      {user.role !== "admin" && (
+        <CustomerBoard
+          rooms={rooms}
+          bookingData={BookingExample}
+          steps={steps}
+        />
+      )}
+      {user.role === "admin" && (
+        <AdminBoard rooms={rooms} bookingData={BookingExample} steps={steps} />
+      )}
     </>
   );
 };

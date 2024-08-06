@@ -11,12 +11,12 @@ const router = express.Router();
 
 // Routes with authorization for all roles
 router
-  .route("/:id")
-  .get(VerifyAuth, VerifyRole(ROLES_GROUP.ALL), roomController.getItem);
-
-router
   .route("/all")
   .get(VerifyAuth, VerifyRole(ROLES_GROUP.ALL), roomController.getAll);
+
+router
+  .route("/:id")
+  .get(VerifyAuth, VerifyRole(ROLES_GROUP.ALL), roomController.getItem);
 
 // Routes with authorization for Admins and Staff
 router
