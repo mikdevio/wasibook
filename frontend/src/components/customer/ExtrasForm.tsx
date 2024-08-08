@@ -11,14 +11,15 @@ import {
 } from "react-bootstrap";
 
 import icon from "../../assets/placeholder.svg";
-import { BookingData, RoomReservedData } from "../../types/Types";
+import { BookingData, RoomReservedData, UserData } from "../../types/Types";
 
 interface BookingFormProps {
+  user: UserData;
   bookingData?: BookingData;
 }
 
 const ExtrasForm: React.FC<BookingFormProps> = (props: BookingFormProps) => {
-  const { bookingData } = props;
+  const { user, bookingData } = props;
   return (
     <div className="card shadow">
       <div className="card-body">
@@ -30,7 +31,7 @@ const ExtrasForm: React.FC<BookingFormProps> = (props: BookingFormProps) => {
           <span>No hay habiaciones reservadas </span>
         )}
         <DisclaimerArea />
-        <DetailsForm />
+        <DetailsForm user={user} />
         <ExtrasArea />
         <ButtonsArea />
       </div>
@@ -116,9 +117,12 @@ const DisclaimerArea: React.FC<DisclaimerAreaProps> = () => {
   );
 };
 
-interface DetailsFormProps {}
+interface DetailsFormProps {
+  user: UserData;
+}
 
-const DetailsForm: React.FC<DetailsFormProps> = () => {
+const DetailsForm: React.FC<DetailsFormProps> = (props: DetailsFormProps) => {
+  const { user } = props;
   return (
     <Card className="mb-4">
       <Card.Body>
@@ -130,6 +134,7 @@ const DetailsForm: React.FC<DetailsFormProps> = () => {
               <Form.Control
                 type="firstname"
                 placeholder="Enter your first name"
+                value={user.firstName}
               ></Form.Control>
             </Form.Group>
 
@@ -138,15 +143,17 @@ const DetailsForm: React.FC<DetailsFormProps> = () => {
               <Form.Control
                 type="lastname"
                 placeholder="Enter your last name"
+                value={user.lastName}
               ></Form.Control>
             </Form.Group>
           </Row>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>First name</Form.Label>
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Enter your email"
+                value={user.email}
               ></Form.Control>
             </Form.Group>
 
@@ -155,6 +162,7 @@ const DetailsForm: React.FC<DetailsFormProps> = () => {
               <Form.Control
                 type="phone"
                 placeholder="Enter your phone number"
+                value={user.phone}
               ></Form.Control>
             </Form.Group>
           </Row>

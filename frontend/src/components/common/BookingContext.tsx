@@ -139,10 +139,13 @@ export const ReservationProvider = ({ children }: { children: ReactNode }) => {
           value: reservationList.reduce((total, reservation) => {
             const taxAmount = reservation.roomData.taxes
               .filter((tax) => tax.name === taxName)
-              .reduce(
-                (sum, tax) => sum + tax.rate * reservation.roomData.price,
-                0
-              );
+              .reduce((sum, tax) => {
+                const stayLength = getStayLength(
+                  reservation.checkinData.date,
+                  reservation.checkoutData.date
+                );
+                return sum + tax.rate * reservation.roomData.price * stayLength;
+              }, 0);
             return total + taxAmount;
           }, 0),
         },

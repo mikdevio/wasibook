@@ -25,7 +25,7 @@ const steps = [
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const [rooms, setRooms] = useState<RoomData[]>([]);
-  console.log(user);
+  // console.log(user);
 
   useEffect(() => {
     const fetchRooms = async () => {

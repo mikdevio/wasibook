@@ -29,7 +29,10 @@ const CustomerBoard: React.FC<CustomerBoardProps> = (
         return <RoomSelectionForm roomList={rooms} />;
       case 2:
         return (
-          <ExtrasForm bookingData={bookingData ? bookingData : undefined} />
+          <ExtrasForm
+            user={user}
+            bookingData={bookingData ? bookingData : undefined}
+          />
         );
       case 3:
         return <PaymentForm />;
