@@ -33,15 +33,20 @@ const CheckoutForm: React.FC = () => {
       return;
     }
 
-    const { error } = await stripe.confirmPayment({
+    setIsProcessing(true);
+
+    const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         return_url: `${window.location.origin}/completion`,
       },
+      redirect: "if_required",
     });
 
-    if (error.type === "card_error" || error.type === "validation_error") {
+    if (error) {
       setMessage(error.message || "");
+    } else if (paymentIntent && paymentIntent.status === "succeeded") {
+      setMessage("Payment status: " + paymentIntent.status + "!!");
     } else {
       setMessage("An unexpected error occured.");
     }
@@ -53,7 +58,7 @@ const CheckoutForm: React.FC = () => {
     <Card>
       <Card.Title>PaymentForm</Card.Title>
       <Card.Body>
-        <Form onSubmit={handleSubmit} as={Container}>
+        <Form as={Container}>
           <Row className="text-center">
             <Col className="d-flex flex-column">
               <Form.Label>Cantidad por pagar:</Form.Label>
@@ -69,6 +74,7 @@ const CheckoutForm: React.FC = () => {
             <Col>
               <Button
                 type="submit"
+                onClick={() => handleSubmit}
                 disabled={isProcessing || !stripe || !elements}
                 className="w-100"
               >
