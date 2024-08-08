@@ -70,6 +70,7 @@ export type UserData = {
   phone: string;
   address: string;
   role: string;
+  taxNumber?: string;
 };
 
 export type CustomerData = {

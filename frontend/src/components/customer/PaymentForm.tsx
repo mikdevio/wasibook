@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe, Stripe } from "@stripe/stripe-js";
 import {
   Elements,
   PaymentElement,
@@ -8,18 +8,19 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { useReservation } from "../common/BookingContext";
+import { useAuth } from "../common/AuthContext";
 
-const stripePromise = loadStripe(
-  "pk_test_51PlOv1HSjjNGSX26fUi13VsV1NzVdGp4TsLuMhX9tZlapFibxchopjfvZQSWEm7qVq5yxAVOldlnKKj2pQOkdAgz00Kg2L9n7j"
-); // Sustituye con tu clave pública de Stripe
-
-const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
+const CheckoutForm: React.FC = () => {
   const stripe = useStripe();
   const elements = useElements();
   const { bookingData } = useReservation();
+
   const [amount, setAmount] = useState<number | undefined>(
     bookingData.pricesDictionary.total.value
   );
+
+  const [message, setMessage] = useState<string>("");
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   useEffect(() => {
     setAmount(bookingData.pricesDictionary.total.value);
@@ -28,23 +29,24 @@ const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!stripe || !elements || !clientSecret) {
+    if (!stripe || !elements) {
       return;
     }
 
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:3000/checkout-success",
+        return_url: `${window.location.origin}/completion`,
       },
     });
 
-    if (error) {
-      console.log("[error]", error);
-      alert("Error en el pago: " + error.message);
+    if (error.type === "card_error" || error.type === "validation_error") {
+      setMessage(error.message || "");
     } else {
-      alert("Pago realizado con éxito");
+      setMessage("An unexpected error occured.");
     }
+
+    setIsProcessing(false);
   };
 
   return (
@@ -61,19 +63,20 @@ const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
             </Col>
           </Row>
           <Row>
-            <Col>{clientSecret ? <PaymentElement /> : <p>Cargando...</p>}</Col>
+            <Col>{!isProcessing ? <PaymentElement /> : <p>Cargando...</p>}</Col>
           </Row>
           <Row className="mt-4">
             <Col>
               <Button
                 type="submit"
-                disabled={!stripe || !clientSecret}
+                disabled={isProcessing || !stripe || !elements}
                 className="w-100"
               >
-                Pagar
+                {isProcessing ? "Procesando ... " : "Paga ahora"}
               </Button>
             </Col>
           </Row>
+          {message && <div id="payment-message">{message}</div>}
         </Form>
       </Card.Body>
     </Card>
@@ -81,46 +84,45 @@ const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
 };
 
 const PaymentForm: React.FC = () => {
+  const { user } = useAuth();
   const { bookingData } = useReservation();
+  const [stripePromise, setStripePromise] =
+    useState<Promise<Stripe | null> | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
 
   useEffect(() => {
-    const amount = bookingData.pricesDictionary.total.value;
+    fetch("http://localhost:3000/config").then(async (r) => {
+      const { publishableKey } = await r.json();
+      setStripePromise(loadStripe(publishableKey));
+    });
+  }, []);
 
-    if (amount) {
-      // Crear el PaymentIntent en el backend
-      fetch("http://localhost:3000/invoice/pay-stripe", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ amount }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.clientSecret) {
-            setClientSecret(data.clientSecret);
-          } else {
-            console.error("Error fetching clientSecret:", data.error);
-            alert("Error fetching clientSecret: " + data.error);
-          }
-        })
-        .catch((error) => {
-          console.error("Fetch error:", error);
-          alert("Error fetching clientSecret: " + error.message);
-        });
-    }
-  }, [bookingData.pricesDictionary.total.value]);
-
-  if (!clientSecret) {
-    return <p>Cargando...</p>; // Mostrar mensaje de carga hasta que tengamos el clientSecret
-  }
+  useEffect(() => {
+    fetch("http://localhost:3000/invoice/pay-stripe", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        amount: bookingData.pricesDictionary.total.value,
+        customer: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+      }),
+    }).then(async (result) => {
+      var { clientSecret } = await result.json();
+      setClientSecret(clientSecret);
+    });
+  }, []);
 
   return (
-    <Elements stripe={stripePromise} options={{ clientSecret }}>
-      <CheckoutForm clientSecret={clientSecret} />
-    </Elements>
+    <>
+      {clientSecret && stripePromise && (
+        <Elements stripe={stripePromise} options={{ clientSecret }}>
+          <CheckoutForm />
+        </Elements>
+      )}
+    </>
   );
 };
 
