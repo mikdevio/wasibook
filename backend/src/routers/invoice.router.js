@@ -17,6 +17,14 @@ router
   );
 
 router
+  .route("/pay-stripe")
+  .post(
+    VerifyAuth,
+    VerifyRole(ROLES_GROUP.ONLY_CUSTOMER),
+    invoiceController.payStripe
+  );
+
+router
   .route("/edit/:id")
   .get(
     VerifyAuth,
@@ -62,19 +70,11 @@ router
   .get(VerifyAuth, VerifyRole(ROLES_GROUP.ALL, invoiceController.getItem));
 
 router
-  .route("/payKushki")
+  .route("/pay-kushki")
   .post(
     VerifyAuth,
     VerifyRole(ROLES_GROUP.ONLY_CUSTOMER),
     invoiceController.payKushki
-  );
-
-router
-  .route("/payStripe")
-  .post(
-    VerifyAuth,
-    VerifyRole(ROLES_GROUP.ONLY_CUSTOMER),
-    invoiceController.payStripe
   );
 
 export default router;

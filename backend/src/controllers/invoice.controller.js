@@ -1,8 +1,9 @@
 import Invoice from "../models/invoice.model.js";
 import * as baseController from "../controllers/base.controller.js";
+import Stripe from "stripe";
 
 // TODO: Implement functionalities
-// const stripe = new Stripe("");
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const getItem = (req, res) => {
   baseController.getItem(Invoice, req, res);
@@ -65,18 +66,27 @@ export const payKushki = async (req, res) => {
 };
 
 export const payStripe = async (req, res) => {
-  const { token, amount } = req.body;
+  const { amount } = req.body;
+
+  // console.log("Received request to create payment intent with amount:", amount);
+
+  if (!amount) {
+    return res.status(400).send({ error: "Amount is required" });
+  }
 
   try {
-    const charge = await stripe.charges.create({
-      amount: amount,
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: (amount * 100).toFixed(0), // Asegúrate de que el monto esté en centavos
       currency: "usd",
-      source: token,
-      description: "Descripción del pago",
     });
 
-    res.status(200).send({ success: true, charge });
+    // console.log("Payment Intent created:", paymentIntent);
+
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
   } catch (error) {
-    res.status(500).send({ success: false, error: error.message });
+    console.error("Error creating Payment Intent:", error);
+    res.status(500).send({ error: error.message });
   }
 };
