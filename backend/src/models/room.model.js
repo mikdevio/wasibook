@@ -49,7 +49,7 @@ const roomSchema = new Schema(
       default: 1,
     },
     taxes: {
-      type: [String],
+      type: [{ type: Schema.Types.ObjectId, ref: "Tax" }], // Referencia al esquema Tax
       required: false,
     },
   },

@@ -1,18 +1,24 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
-
-interface RoomReservation {
-  roomId: string;
-  checkIn: Date;
-  checkOut: Date;
-  price: number;
-  taxes: number;
-}
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
+import { BookingData, CheckType, RoomReservedData } from "../../types/Types";
+import moment from "moment";
+import { getStayLength } from "../../services/utils";
 
 interface BookingContextType {
-  reservations: RoomReservation[];
-  addReservation: (reservation: RoomReservation) => void;
+  bookingData: BookingData;
+  addReservation: (reservation: RoomReservedData) => void;
   removeReservation: (roomId: string) => void;
-  calculateTotal: () => number;
+  changeDateReservation: (
+    roomId: string,
+    checkType: CheckType,
+    newDate: Date
+  ) => void;
+  updatePriceDictionary: () => void;
 }
 
 const ReservationContext = createContext<BookingContextType | undefined>(
@@ -28,31 +34,151 @@ export const useReservation = () => {
 };
 
 export const ReservationProvider = ({ children }: { children: ReactNode }) => {
-  const [reservations, setReservations] = useState<RoomReservation[]>([]);
+  const [bookingData, setBookingData] = useState<BookingData>({
+    reservationList: [],
+    pricesDictionary: {},
+  });
 
-  const addReservation = (reservation: RoomReservation) => {
-    setReservations([...reservations, reservation]);
+  const addReservation = (reservation: RoomReservedData) => {
+    setBookingData((prevBookingData) => {
+      return {
+        ...prevBookingData,
+        reservationList: [...prevBookingData.reservationList, reservation],
+      };
+    });
   };
 
   const removeReservation = (roomId: string) => {
-    setReservations(
-      reservations.filter((reservation) => reservation.roomId !== roomId)
-    );
+    setBookingData({
+      ...bookingData,
+      reservationList: bookingData.reservationList.filter(
+        (roomReserved) => roomReserved.roomData._id !== roomId
+      ),
+    });
   };
 
-  const calculateTotal = () => {
-    return reservations.reduce((total, reservation) => {
-      return total + reservation.price + reservation.taxes;
+  const updatePriceDictionary = () => {
+    setBookingData((prevBookingData) => {
+      return {
+        ...prevBookingData,
+        pricesDictionary: calculatePriceDictionary(
+          prevBookingData.reservationList
+        ),
+      };
+    });
+  };
+
+  useEffect(() => {
+    updatePriceDictionary();
+  }, [bookingData.reservationList]);
+
+  const changeDateReservation = (
+    roomId: string,
+    checkType: CheckType,
+    newDate: Date
+  ) => {
+    const newDateObj = moment.isMoment(newDate) ? newDate.toDate() : newDate;
+
+    setBookingData((prevBookingData) => ({
+      ...prevBookingData,
+      reservationList: prevBookingData.reservationList.map((roomReserved) => {
+        if (roomReserved.roomData._id === roomId) {
+          let checkinDate = roomReserved.checkinData.date;
+          let checkoutDate = roomReserved.checkoutData.date;
+
+          if (checkType === CheckType.IN) {
+            checkinDate = newDateObj;
+            if (moment(checkinDate).isAfter(moment(checkoutDate))) {
+              checkoutDate = checkinDate;
+            }
+          } else {
+            checkoutDate = newDateObj;
+            if (moment(checkoutDate).isBefore(moment(checkinDate))) {
+              checkinDate = checkoutDate;
+            }
+          }
+
+          return {
+            ...roomReserved,
+            checkinData: {
+              ...roomReserved.checkinData,
+              date: checkinDate,
+            },
+            checkoutData: {
+              ...roomReserved.checkoutData,
+              date: checkoutDate,
+            },
+          };
+        }
+        return roomReserved;
+      }),
+    }));
+  };
+
+  const calculatePriceDictionary = (reservationList: RoomReservedData[]) => {
+    const subTotal = reservationList.reduce((total, reservation) => {
+      const stayLength = getStayLength(
+        reservation.checkinData.date,
+        reservation.checkoutData.date
+      );
+      return total + reservation.roomData.price * stayLength;
     }, 0);
+
+    const taxNames = [
+      ...new Set(
+        reservationList.flatMap((reservation) =>
+          reservation.roomData.taxes.map((tax) => tax.name)
+        )
+      ),
+    ];
+
+    const taxArray = taxNames.map((taxName) => {
+      return {
+        [taxName]: {
+          tag: taxName,
+          value: reservationList.reduce((total, reservation) => {
+            const taxAmount = reservation.roomData.taxes
+              .filter((tax) => tax.name === taxName)
+              .reduce(
+                (sum, tax) => sum + tax.rate * reservation.roomData.price,
+                0
+              );
+            return total + taxAmount;
+          }, 0),
+        },
+      };
+    });
+
+    let pricesDict = {
+      subtotal: { tag: "Subtotal", value: subTotal },
+    };
+
+    pricesDict = { ...pricesDict };
+
+    taxArray.forEach((taxObj) => {
+      Object.assign(pricesDict, taxObj);
+    });
+
+    let total = 0;
+    for (const [key, price] of Object.entries(pricesDict)) {
+      if (key !== "total") {
+        total += price.value;
+      }
+    }
+
+    Object.assign(pricesDict, { total: { tag: "Total", value: total } });
+
+    return pricesDict;
   };
 
   return (
     <ReservationContext.Provider
       value={{
-        reservations,
+        bookingData: bookingData,
         addReservation,
         removeReservation,
-        calculateTotal,
+        changeDateReservation,
+        updatePriceDictionary,
       }}
     >
       {children}

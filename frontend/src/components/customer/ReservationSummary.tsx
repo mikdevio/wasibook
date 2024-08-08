@@ -1,29 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 
 import PriceSummary from "./PriceSummary";
-import { BookingData, RoomReservedData } from "../../types/Types";
+import { CheckData, RoomReservedData } from "../../types/Types";
+import { useReservation } from "../common/BookingContext";
+
+import "./CustomerBoard.css";
+import { getStayLength } from "../../services/utils";
+import moment from "moment";
 
 interface CheckBlockProps {
-  check: string;
+  roomId: string;
+  check: CheckData;
 }
 
 const CheckBlock: React.FC<CheckBlockProps> = (props: CheckBlockProps) => {
-  const { check } = props;
+  const { roomId, check } = props;
   const [dateTime, setDateTime] = useState<Date>(new Date());
+  const { changeDateReservation } = useReservation();
+
+  useEffect(() => {
+    setDateTime(check.date);
+  }, [check.date]);
 
   const handleDateChange = (date: any) => {
-    setDateTime(date);
+    const newDate = moment.isMoment(date) ? date.toDate() : date;
+    setDateTime(newDate);
+    changeDateReservation(roomId, check.type, newDate);
   };
 
   return (
     <Container className="p-0">
       <Row>
         <Col>
-          <Card.Text className="p-0 fw-bold">Check-{check}:</Card.Text>
+          <Card.Text className="p-0 fw-bold">Check-{check.type}:</Card.Text>
         </Col>
       </Row>
       <Row>
@@ -67,14 +80,8 @@ const RoomSelectedLabel: React.FC<RoomSelectedLabelProps> = (
       </Row>
       <Row className="d-flex justify-content-center align-items-center">
         <Col className="col-2">{code}</Col>
-        <Col>{description}</Col>
-      </Row>
-      <Row className="d-flex justify-content-center mt-2">
-        <Col className="text-center">
-          <Card.Link>Change</Card.Link>
-        </Col>
-        <Col className="text-center">
-          <Card.Link className="text-danger">Delete</Card.Link>
+        <Col>
+          <p className="text-truncate-multiline">{description}</p>
         </Col>
       </Row>
     </Container>
@@ -90,19 +97,27 @@ const RoomReservationCard: React.FC<RoomReservationCardProps> = (
   props: RoomReservationCardProps
 ) => {
   const { id, reservation } = props;
+  const { removeReservation, updatePriceDictionary } = useReservation();
 
-  const getStayLength = (dateIn: Date, dateOut: Date) => {
-    return dateOut.getDay() - dateIn.getDay();
+  const handleDelete = (roomId: string) => {
+    removeReservation(roomId);
+    updatePriceDictionary();
   };
 
   return (
     <Container key={id} className="mt-3 border-bottom">
       <Row className="justify-content-between">
         <Col className="m-0 p-0">
-          <CheckBlock check="in" />
+          <CheckBlock
+            roomId={reservation.roomData._id}
+            check={reservation.checkinData}
+          />
         </Col>
         <Col>
-          <CheckBlock check="out" />
+          <CheckBlock
+            roomId={reservation.roomData._id}
+            check={reservation.checkoutData}
+          />
         </Col>
       </Row>
       <Row>
@@ -119,24 +134,35 @@ const RoomReservationCard: React.FC<RoomReservationCardProps> = (
           description={reservation.roomData.description}
         />
       </Row>
+      <Row className="d-flex justify-content-center mb-2">
+        <Col className="text-center">
+          <Card.Link style={{ cursor: "pointer" }}>Change</Card.Link>
+        </Col>
+        <Col className="text-center">
+          <Card.Link
+            className="text-danger"
+            style={{ cursor: "pointer" }}
+            onClick={() => handleDelete(reservation.roomData._id)}
+          >
+            Delete
+          </Card.Link>
+        </Col>
+      </Row>
     </Container>
   );
 };
 
-interface ReservationSummaryProps {
-  bookingData?: BookingData;
-}
-
-const ReservationSummary: React.FC<ReservationSummaryProps> = (
-  props: ReservationSummaryProps
-) => {
-  const { bookingData } = props;
+const ReservationSummary: React.FC = () => {
+  const { bookingData } = useReservation();
+  console.log(bookingData);
 
   return (
     <Card className="shadow">
-      <Card.Body>
+      <Card.Header>
         <Card.Title>Reservation Summary</Card.Title>
-        {bookingData ? (
+      </Card.Header>
+      <Card.Body>
+        {bookingData.reservationList.length !== 0 ? (
           bookingData.reservationList.map((r, id) => (
             <RoomReservationCard id={id} reservation={r} />
           ))

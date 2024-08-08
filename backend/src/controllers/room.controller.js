@@ -7,7 +7,7 @@ export const getItem = (req, res) => {
 };
 
 export const getAll = (req, res) => {
-  baseController.getAll(Room, req, res);
+  baseController.getAll(Room, req, res, "taxes");
 };
 
 export const editItem = (req, res) => {

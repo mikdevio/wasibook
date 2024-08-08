@@ -17,15 +17,23 @@ export type CheckData = {
   date: Date;
 };
 
+export type TaxData = {
+  name: string;
+  description: string;
+  rate: number;
+};
+
 export interface RoomData {
+  _id: string;
   code: string;
   roomType: "Single" | "Double" | "Suite" | "Deluxe";
   price: number;
   amenities: string[];
   description: string;
   availability: boolean;
-  img: { type: string; data: number[] };
+  img: { data: { data: number[]; type: "Buffer" } };
   stars: number;
+  taxes: TaxData[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -58,7 +66,7 @@ export type UserData = {
   lastName: string;
   email: string;
   password: string;
-  img: string; // mejorar tipo
+  img: { data: { data: number[]; type: "Buffer" } };
   phone: string;
   address: string;
   role: string;

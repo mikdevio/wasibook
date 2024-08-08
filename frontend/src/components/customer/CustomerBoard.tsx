@@ -8,9 +8,10 @@ import NavigationBar from "../common/Navbar";
 import ConfirmationForm from "./ConfirmationForm";
 import RoomSelectionForm from "./RoomSelectionForm";
 import ReservationSummary from "./ReservationSummary";
-import { BookingData, RoomData, StepData } from "../../types/Types";
+import { BookingData, RoomData, StepData, UserData } from "../../types/Types";
 
 interface CustomerBoardProps {
+  user: UserData;
   rooms: RoomData[];
   bookingData?: BookingData | undefined;
   steps: StepData[];
@@ -19,7 +20,7 @@ interface CustomerBoardProps {
 const CustomerBoard: React.FC<CustomerBoardProps> = (
   props: CustomerBoardProps
 ) => {
-  const { rooms, bookingData, steps } = props;
+  const { user, rooms, bookingData, steps } = props;
   const [selectedStep, setSelectedStep] = useState<number>(1);
 
   const renderStepComponent = () => {
@@ -41,7 +42,7 @@ const CustomerBoard: React.FC<CustomerBoardProps> = (
 
   return (
     <>
-      <NavigationBar />
+      <NavigationBar userName={user.email} />
       <Container className="mt-4">
         <StepMenu
           stepList={steps}
@@ -51,7 +52,7 @@ const CustomerBoard: React.FC<CustomerBoardProps> = (
         <Row className="row">
           <Col className="col-md-8">{renderStepComponent()}</Col>
           <Col className="col-md-4">
-            <ReservationSummary bookingData={bookingData} />
+            <ReservationSummary />
           </Col>
         </Row>
       </Container>

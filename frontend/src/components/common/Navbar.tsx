@@ -5,7 +5,14 @@ import { NavDropdown } from "react-bootstrap";
 import { userLogout } from "../../services/auth";
 import { useNavigate } from "react-router-dom";
 
-function NavigationBar() {
+interface NavigationBarProps {
+  userName: string;
+}
+
+const NavigationBar: React.FC<NavigationBarProps> = (
+  props: NavigationBarProps
+) => {
+  const { userName } = props;
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -40,7 +47,10 @@ function NavigationBar() {
             <Nav.Link href="#pricing">Pricing</Nav.Link>
           </Nav>
           <Nav className="ms-auto">
-            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+            <NavDropdown
+              title={userName ? userName : "user"}
+              id="basic-nav-dropdown"
+            >
               <NavDropdown.Item href="#action/3.1">Perfil</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">Settings</NavDropdown.Item>
               <NavDropdown.Divider />
@@ -53,6 +63,6 @@ function NavigationBar() {
       </Container>
     </Navbar>
   );
-}
+};
 
 export default NavigationBar;

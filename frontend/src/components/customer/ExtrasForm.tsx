@@ -62,7 +62,7 @@ const ReservationCard: React.FC<ReservationCardProps> = (
         </Col>
         <Col className="col">
           <CardBody>
-            <h5 className="card-title">{`${reservationData.roomData.roomCode} ${reservationData.roomData.description}`}</h5>
+            <h5 className="card-title">{`${reservationData.roomData.code} ${reservationData.roomData.description}`}</h5>
           </CardBody>
         </Col>
       </Row>

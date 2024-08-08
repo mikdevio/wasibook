@@ -1,87 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import {
-  BookingData,
-  PricesDictionary,
-  CheckData,
-  RoomData,
-  RoomReservedData,
-  StepState,
-  CheckType,
-} from "./../types/Types";
+import { RoomData, StepState } from "./../types/Types";
 import { roomGetAll } from "../services/hadlerData";
 import AdminBoard from "../components/admin/AdminBoard";
 import { useAuth } from "../components/common/AuthContext";
 import CustomerBoard from "../components/customer/CustomerBoard";
 import { ReservationProvider } from "../components/common/BookingContext";
-
-const checkIn: CheckData = {
-  type: CheckType.IN,
-  date: new Date("2022-05-22T16:00:00"),
-};
-
-const checkOut: CheckData = {
-  type: CheckType.OUT,
-  date: new Date("2022-05-25T11:00:00"),
-};
-
-const roomOne: RoomData = {
-  img: { type: "url/img/1.jpeg", data: [] },
-  code: "A001",
-  stars: 4,
-  roomType: "Suite",
-  price: 12.5,
-  description: "King bed stylish Apartment with Loft style family room",
-  availability: true,
-  amenities: [],
-};
-
-const roomTwo: RoomData = {
-  img: { type: "url/img/2.jpeg", data: [] },
-  code: "A002",
-  stars: 3,
-  roomType: "Single",
-  price: 25.5,
-  description: "King bed stylish Apartment with Loft style family room",
-  availability: true,
-  amenities: [],
-};
-
-const Prices: PricesDictionary = {
-  id_1: {
-    tag: "Rooms and offer:",
-    value: 625.43,
-  },
-  id_2: {
-    tag: "8% VAT:",
-    value: 50.03,
-  },
-  id_3: {
-    tag: "City tax:",
-    value: 16.44,
-  },
-  id_4: {
-    tag: "Total Price:",
-    value: 698.87,
-  },
-};
-
-const reservationOne: RoomReservedData = {
-  checkinData: checkIn,
-  checkoutData: checkOut,
-  roomData: roomOne,
-};
-
-const reservationTwo: RoomReservedData = {
-  checkinData: checkIn,
-  checkoutData: checkOut,
-  roomData: roomTwo,
-};
-
-const BookingExample: BookingData = {
-  reservationList: [reservationOne, reservationTwo],
-  pricesDictionary: Prices,
-};
 
 const steps = [
   {
@@ -117,14 +41,20 @@ const Dashboard: React.FC = () => {
       {user.role !== "admin" && (
         <ReservationProvider>
           <CustomerBoard
+            user={user}
             rooms={rooms}
-            bookingData={BookingExample}
+            bookingData={undefined}
             steps={steps}
           />
         </ReservationProvider>
       )}
       {user.role === "admin" && (
-        <AdminBoard rooms={rooms} bookingData={BookingExample} steps={steps} />
+        <AdminBoard
+          user={user}
+          rooms={rooms}
+          bookingData={undefined}
+          steps={steps}
+        />
       )}
     </>
   );

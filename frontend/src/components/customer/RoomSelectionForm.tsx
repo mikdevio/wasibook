@@ -1,9 +1,10 @@
 import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
 import { StarFill } from "react-bootstrap-icons";
 
-import { RoomData } from "../../types/Types";
+import { CheckType, RoomData, RoomReservedData } from "../../types/Types";
 import React, { useEffect, useState } from "react";
-import "./RoomCard.css";
+import "./CustomerBoard.css";
+import { useReservation } from "../common/BookingContext";
 
 interface RoomSelectionFormProps {
   roomList: RoomData[];
@@ -16,7 +17,7 @@ const RoomSelectionForm: React.FC<RoomSelectionFormProps> = (
 
   return (
     <>
-      <Card className="shadow pt-1 h-100">
+      <Card className="shadow pt-2 h-100">
         <Card.Header>
           <Card.Title>Rooms</Card.Title>
         </Card.Header>
@@ -29,7 +30,7 @@ const RoomSelectionForm: React.FC<RoomSelectionFormProps> = (
                   md={4}
                   className="d-flex align-items-stretch mb-4"
                 >
-                  <RoomCard {...room} />
+                  <RoomCard roomData={room} />
                 </Col>
               ))}
             {roomList.length === 0 && (
@@ -46,26 +47,22 @@ const RoomSelectionForm: React.FC<RoomSelectionFormProps> = (
 };
 
 interface RoomCardProps {
-  code: string;
-  img: any;
-  stars: number;
-  roomType: string;
-  description: string;
-  price: number;
+  roomData: RoomData;
 }
 
 const RoomCard: React.FC<RoomCardProps> = (props: RoomCardProps) => {
-  const { code, img, roomType, stars, description, price } = props;
+  const { roomData } = props;
   const [imgSrc, setImgSrc] = useState<any | null>(null);
+  const { addReservation, updatePriceDictionary } = useReservation();
 
-  const starsCount = Array.from({ length: stars });
+  const starsCount = Array.from({ length: roomData.stars });
 
   // console.log(img);
 
   useEffect(() => {
     try {
       // Convert img array into Uint8Array
-      const uint8Array = new Uint8Array(img.data.data);
+      const uint8Array = new Uint8Array(roomData.img.data.data);
       // Create a Blob from the Uint8Array
       const blob = new Blob([uint8Array], { type: "image/png" });
       // Generate a URL for the Blob
@@ -77,7 +74,24 @@ const RoomCard: React.FC<RoomCardProps> = (props: RoomCardProps) => {
     } catch (error) {
       console.error("Error decoding base64 string:", error);
     }
-  }, [img]);
+  }, [roomData.img]);
+
+  const handleAddReservation = () => {
+    const newReservation: RoomReservedData = {
+      roomData: roomData,
+      checkinData: {
+        type: CheckType.IN,
+        date: new Date(),
+      },
+      checkoutData: {
+        type: CheckType.OUT,
+        date: new Date(Date.now() + 86400000),
+      },
+    };
+
+    addReservation(newReservation);
+    updatePriceDictionary();
+  };
 
   // console.log(imgSrc);
 
@@ -94,16 +108,16 @@ const RoomCard: React.FC<RoomCardProps> = (props: RoomCardProps) => {
       <Card.Body as={Container} className="px-3">
         <Row>
           <Col>
-            <Card.Title>{`Room ${code}`}</Card.Title>
+            <Card.Title>{`Room ${roomData.code}`}</Card.Title>
           </Col>
           <Col className="col-4 text-end">
-            <Badge bg="secondary">{roomType}</Badge>
+            <Badge bg="dark">{roomData.roomType}</Badge>
           </Col>
         </Row>
         <Row>
           <Col>
             <Card.Text className="text-truncate-multiline">
-              {description}
+              {roomData.description}
             </Card.Text>
           </Col>
         </Row>
@@ -114,12 +128,18 @@ const RoomCard: React.FC<RoomCardProps> = (props: RoomCardProps) => {
             ))}
           </Col>
           <Col className="text-end">
-            <span className="text-primary fw-bolder ">{price} USD</span>
+            <span className="text-primary fw-bolder ">
+              {roomData.price} USD
+            </span>
           </Col>
         </Row>
         <Row>
           <Col className="">
-            <Button variant="primary" className="bt-sm w-100">
+            <Button
+              variant="primary"
+              className="bt-sm w-100"
+              onClick={() => handleAddReservation()}
+            >
               Book Room
             </Button>
           </Col>
