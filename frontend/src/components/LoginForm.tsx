@@ -27,14 +27,19 @@ const LoginForm: React.FC = () => {
       if (response) {
         setMessage("Login successfull");
         setIsLogin(true);
-        navigate("/dashboard");
+
+        if (response.role === "customer") {
+          navigate("/clientboard");
+        } else {
+          navigate("/adminboard/mainboard");
+        }
       } else {
         setMessage("Error while loging.");
         setIsLogin(false);
       }
     } catch (error) {
       setIsLogin(false);
-      setMessage("Server error while loging.");
+      setMessage(`Server error while loging: ${error}`);
     }
   };
 

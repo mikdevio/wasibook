@@ -27,7 +27,7 @@ const RoomSelectionForm: React.FC<RoomSelectionFormProps> = (
               roomList.map((room, index) => (
                 <Col
                   key={index}
-                  md={4}
+                  md={3}
                   className="d-flex align-items-stretch mb-4"
                 >
                   <RoomCard roomData={room} />
@@ -96,13 +96,13 @@ const RoomCard: React.FC<RoomCardProps> = (props: RoomCardProps) => {
   // console.log(imgSrc);
 
   return (
-    <Card className="mt-2" style={{ width: "100%", height: "280px" }}>
+    <Card className="mt-2" style={{ width: "100%", height: "400px" }}>
       {imgSrc && (
         <Card.Img
           variant="top"
           src={imgSrc}
           className="center-image"
-          style={{ width: "100%", height: "40%" }}
+          style={{ width: "100%", height: "55%" }}
         />
       )}
       <Card.Body as={Container} className="px-3">

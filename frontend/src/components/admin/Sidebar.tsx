@@ -3,6 +3,8 @@ import {
   Building,
   CalendarWeek,
   Coin,
+  ColumnsGap,
+  Grid,
   List,
   PersonFill,
   ReceiptCutoff,
@@ -25,7 +27,7 @@ const Sidebar: React.FC = () => {
   return (
     <Container
       className="d-flex text-bg-dark vh-100 ps-2 text-white ms-0"
-      style={open ? { width: "200px" } : { width: "55px" }}
+      style={open ? { width: "100%" } : { width: "22%" }}
     >
       <Navbar className="d-flex flex-column">
         <Nav defaultActiveKey="#" className="d-flex flex-column">
@@ -33,32 +35,42 @@ const Sidebar: React.FC = () => {
             icon={<List />}
             name="Menu"
             hide={open}
-            url="#"
             onClick={handleOpen}
+          />
+          <SidebarItem
+            icon={<ColumnsGap />}
+            name="Dashboard"
+            hide={open}
+            url="/adminboard/mainboard"
           />
           <SidebarItem
             icon={<PersonFill />}
             name="Personal"
-            url="#"
+            url="/adminboard/personel"
             hide={open}
           />
           <SidebarItem
             icon={<Building />}
             name="Habitaciones"
-            url="#"
+            url="/adminboard/room"
             hide={open}
           />
           <SidebarItem
             icon={<CalendarWeek />}
             name="Reservas"
-            url="#"
+            url="/adminboard/reservation"
             hide={open}
           />
-          <SidebarItem icon={<Coin />} name="Impuestos" url="#" hide={open} />
+          <SidebarItem
+            icon={<Coin />}
+            name="Impuestos"
+            url="/adminboard/tax"
+            hide={open}
+          />
           <SidebarItem
             icon={<ReceiptCutoff />}
             name="Facturas"
-            url="#"
+            url="/adminboard/invoice"
             hide={open}
           />
         </Nav>
@@ -70,7 +82,7 @@ const Sidebar: React.FC = () => {
 interface SidebarMenuItemProps {
   icon: ReactNode;
   name: string;
-  url: string;
+  url?: string;
   onClick?: () => void;
   hide?: boolean;
 }

@@ -17,7 +17,7 @@ export const userLogin = async (
   email: string,
   password: string,
   setUser: (user: any) => void
-): Promise<boolean> => {
+): Promise<any> => {
   try {
     const response = await fetch("http://localhost:3000/user/login", {
       method: "POST",
@@ -34,9 +34,9 @@ export const userLogin = async (
 
     if (response.ok) {
       setUser(data.user);
-      return response.ok;
+      return data.user;
     } else {
-      return false;
+      return response;
     }
   } catch (error) {
     console.error("Error while loging:", error);
@@ -76,7 +76,9 @@ export const userSignup = async (
   }
 };
 
-export const userLogout = async (): Promise<boolean> => {
+export const userLogout = async (
+  setUser: (user: any) => void
+): Promise<boolean> => {
   try {
     const response = await fetch("http://localhost:3000/user/logout", {
       method: "GET",
@@ -87,6 +89,7 @@ export const userLogout = async (): Promise<boolean> => {
     });
 
     if (response.ok) {
+      setUser(null);
       return response.ok;
     } else {
       return false;

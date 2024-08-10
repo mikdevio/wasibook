@@ -4,21 +4,17 @@ import Navbar from "react-bootstrap/Navbar";
 import { NavDropdown } from "react-bootstrap";
 import { userLogout } from "../../services/auth";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
-interface NavigationBarProps {
-  userName: string;
-}
-
-const NavigationBar: React.FC<NavigationBarProps> = (
-  props: NavigationBarProps
-) => {
-  const { userName } = props;
+const NavigationBar: React.FC = () => {
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      const response = await userLogout();
+      const response = await userLogout(setUser);
       if (response) {
+        console.log(user);
         navigate("/login");
       }
     } catch (error) {
@@ -28,7 +24,7 @@ const NavigationBar: React.FC<NavigationBarProps> = (
 
   return (
     <Navbar expand="lg" bg="dark" data-bs-theme="dark">
-      <Container>
+      <Container fluid>
         <Navbar.Brand href="/">
           <img
             alt=""
@@ -41,14 +37,14 @@ const NavigationBar: React.FC<NavigationBarProps> = (
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto ms-auto">
+          <Nav className="me-0 ms-auto">
             <Nav.Link href="#home">Home</Nav.Link>
             <Nav.Link href="#features">Features</Nav.Link>
             <Nav.Link href="#pricing">Pricing</Nav.Link>
           </Nav>
-          <Nav className="ms-auto">
+          <Nav className="ms-5">
             <NavDropdown
-              title={userName ? userName : "user"}
+              title={user.email ? user.email : "user"}
               id="basic-nav-dropdown"
             >
               <NavDropdown.Item href="#action/3.1">Perfil</NavDropdown.Item>
