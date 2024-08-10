@@ -13,3 +13,9 @@ export const about = (req, res) => {
     message: "You can use me to get Wasibook data.",
   });
 };
+
+export const config = (req, res) => {
+  res.send({
+    publishableKey: process.env.STRIPE_PUBLIC_KEY,
+  });
+};

@@ -12,6 +12,7 @@ const router = express.Router();
 
 router.route("/").get(indexController.home);
 router.route("/about").get(indexController.about);
+router.route("/config").get(indexController.config);
 router.use("/user", userRouter);
 router.use("/room", roomRouter);
 router.use("/reservation", reservationRouter);

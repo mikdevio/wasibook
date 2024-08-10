@@ -1,9 +1,10 @@
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 
 import Sidebar from "./Sidebar";
 import NavigationBar from "../common/Navbar";
 
 import { BookingData, RoomData, StepData, UserData } from "../../types/Types";
+import WorkArea from "./WorkArea";
 
 interface AdminBoardProps {
   user: UserData;
@@ -18,8 +19,15 @@ const AdminBoard: React.FC<AdminBoardProps> = (props: AdminBoardProps) => {
   return (
     <>
       <NavigationBar userName={user.email} />
-      <Container fluid>
-        <Sidebar />
+      <Container fluid className="d-inline-flex p-0">
+        <Row className="justify-content-start">
+          <Col>
+            <Sidebar />
+          </Col>
+          <Col>
+            <WorkArea />
+          </Col>
+        </Row>
       </Container>
     </>
   );

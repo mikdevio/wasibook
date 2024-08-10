@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-import { RoomData, StepState } from "./../types/Types";
 import { roomGetAll } from "../services/hadlerData";
+import { RoomData, StepState } from "./../types/Types";
 import AdminBoard from "../components/admin/AdminBoard";
 import { useAuth } from "../components/common/AuthContext";
 import CustomerBoard from "../components/customer/CustomerBoard";

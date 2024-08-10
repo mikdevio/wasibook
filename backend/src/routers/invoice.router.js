@@ -69,12 +69,4 @@ router
   .route("/:id")
   .get(VerifyAuth, VerifyRole(ROLES_GROUP.ALL, invoiceController.getItem));
 
-router
-  .route("/pay-kushki")
-  .post(
-    VerifyAuth,
-    VerifyRole(ROLES_GROUP.ONLY_CUSTOMER),
-    invoiceController.payKushki
-  );
-
 export default router;

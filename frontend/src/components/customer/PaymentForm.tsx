@@ -58,7 +58,7 @@ const CheckoutForm: React.FC = () => {
     <Card>
       <Card.Title>PaymentForm</Card.Title>
       <Card.Body>
-        <Form as={Container}>
+        <Form onSubmit={handleSubmit} id="payment-form">
           <Row className="text-center">
             <Col className="d-flex flex-column">
               <Form.Label>Cantidad por pagar:</Form.Label>
@@ -68,17 +68,21 @@ const CheckoutForm: React.FC = () => {
             </Col>
           </Row>
           <Row>
-            <Col>{!isProcessing ? <PaymentElement /> : <p>Cargando...</p>}</Col>
+            <Col>
+              <PaymentElement id="payment-element" />
+            </Col>
           </Row>
           <Row className="mt-4">
             <Col>
               <Button
+                id="submit"
                 type="submit"
-                onClick={() => handleSubmit}
                 disabled={isProcessing || !stripe || !elements}
                 className="w-100"
               >
-                {isProcessing ? "Procesando ... " : "Paga ahora"}
+                <span id="button-text">
+                  {isProcessing ? "Procesando ... " : "Paga ahora"}
+                </span>
               </Button>
             </Col>
           </Row>
