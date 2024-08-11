@@ -70,7 +70,6 @@ export type UserData = {
   phone: string;
   address: string;
   role: string;
-  taxNumber?: string;
 };
 
 export type CustomerData = {
@@ -83,4 +82,148 @@ export type CustomerData = {
   address: string;
   taxNumber: string;
   reservations: RoomReservedData[];
+};
+
+export type FieldHeader = {
+  tag: string;
+  headerName: string;
+};
+
+export type FieldDetails = {
+  fieldHeaders: FieldHeader[];
+  fieldExcluded: string[];
+};
+
+export const UserFieldDetails: FieldDetails = {
+  fieldHeaders: [
+    {
+      tag: "firstName",
+      headerName: "Nombre",
+    },
+    {
+      tag: "lastName",
+      headerName: "Apellido",
+    },
+    {
+      tag: "employeeId",
+      headerName: "ID empleado",
+    },
+    {
+      tag: "permisions",
+      headerName: "Permisos",
+    },
+    {
+      tag: "img",
+      headerName: "Foto",
+    },
+    {
+      tag: "email",
+      headerName: "Email",
+    },
+    {
+      tag: "email",
+      headerName: "Email",
+    },
+    {
+      tag: "phone",
+      headerName: "Teléfono",
+    },
+    {
+      tag: "address",
+      headerName: "Dirección",
+    },
+  ],
+  fieldExcluded: ["_id", "__t", "__v", "createdAt", "updatedAt"],
+};
+
+export const CustomerFieldDetails: FieldDetails = {
+  fieldHeaders: [
+    {
+      tag: "firstName",
+      headerName: "Nombre",
+    },
+    {
+      tag: "lastName",
+      headerName: "Apellido",
+    },
+    {
+      tag: "img",
+      headerName: "Foto",
+    },
+    {
+      tag: "email",
+      headerName: "Email",
+    },
+    {
+      tag: "email",
+      headerName: "Email",
+    },
+    {
+      tag: "phone",
+      headerName: "Teléfono",
+    },
+    {
+      tag: "address",
+      headerName: "Dirección",
+    },
+    {
+      tag: "taxNumber",
+      headerName: "RUC",
+    },
+  ],
+  fieldExcluded: [
+    "_id",
+    "__t",
+    "__v",
+    "reservations",
+    "createdAt",
+    "updatedAt",
+    "role",
+  ],
+};
+
+export const RoomFieldDetails: FieldDetails = {
+  fieldHeaders: [
+    {
+      tag: "code",
+      headerName: "Código",
+    },
+    {
+      tag: "roomType",
+      headerName: "Tipo",
+    },
+    {
+      tag: "price",
+      headerName: "Precio/Día",
+    },
+    {
+      tag: "amenities",
+      headerName: "Servicios",
+    },
+    {
+      tag: "description",
+      headerName: "Descripción",
+    },
+    {
+      tag: "availability",
+      headerName: "Disponibilidad",
+    },
+    {
+      tag: "img",
+      headerName: "Fotos",
+    },
+    {
+      tag: "Taxes",
+      headerName: "Impuestos",
+    },
+    {
+      tag: "createdAt",
+      headerName: "Creado",
+    },
+    {
+      tag: "updatedAt",
+      headerName: "Actualizado",
+    },
+  ],
+  fieldExcluded: ["_id", "__t", "__v", "createdAt", "updatedAt"],
 };

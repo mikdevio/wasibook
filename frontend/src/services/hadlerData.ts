@@ -1,4 +1,4 @@
-import { RoomData, UserData } from "../types/Types";
+import { CustomerData, RoomData, UserData } from "../types/Types";
 
 export const roomGetAll = async (): Promise<RoomData[]> => {
   try {
@@ -48,7 +48,7 @@ export const userGetAll = async (): Promise<UserData[]> => {
   }
 };
 
-export const customerGetAll = async (): Promise<UserData[]> => {
+export const customerGetAll = async (): Promise<CustomerData[]> => {
   try {
     const response = await fetch("http://localhost:3000/customer/all", {
       method: "GET",
@@ -61,7 +61,7 @@ export const customerGetAll = async (): Promise<UserData[]> => {
     const data = await response.json();
 
     if (response.ok) {
-      return data.data as UserData[];
+      return data.data as CustomerData[];
     } else {
       return [];
     }

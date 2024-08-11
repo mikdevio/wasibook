@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { Card, Col, Row } from "react-bootstrap";
+import { Card, Row } from "react-bootstrap";
 import { ColDef } from "ag-grid-community";
 
-import { UserData } from "../../types/Types";
 import DynamicTable from "../common/DynamicTable";
-import { customerGetAll, userGetAll } from "../../services/hadlerData";
+import { CustomerData, UserData } from "../../types/Types";
 import { generateColumnDefs } from "../../services/utils";
+import { customerGetAll, userGetAll } from "../../services/hadlerData";
+import { CustomerFieldDetails, UserFieldDetails } from "../../types/Types";
 
 const PersonelBoard: React.FC = () => {
   const [users, setUsers] = useState<UserData[]>([]);
-  const [customers, setCustomers] = useState<UserData[]>([]);
+  const [customers, setCustomers] = useState<CustomerData[]>([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -25,27 +26,34 @@ const PersonelBoard: React.FC = () => {
     fetchCustomers();
   }, []);
 
-  const columnDefs: ColDef[] = generateColumnDefs<UserData>(users[0]);
+  const userColumnDefs: ColDef[] = generateColumnDefs<UserData>(
+    users[0],
+    UserFieldDetails
+  );
+  const customerColumnDefs: ColDef[] = generateColumnDefs<CustomerData>(
+    customers[0],
+    CustomerFieldDetails
+  );
 
   return (
     <Card className="mt-3 me-4 shadow">
-      <Card.Header>Room board</Card.Header>
-      <Card.Body className="my-2">
+      <Card.Header>
+        <h4>Personal</h4>
+      </Card.Header>
+      <Card.Body className="mt-0">
         <Row>
-          <Col>
-            <Card.Title>Usuarios</Card.Title>
-          </Col>
-        </Row>
-        <Row>
-          <DynamicTable rowData={users} columnDefs={columnDefs} />
+          <DynamicTable
+            tableLabel="Usuarios"
+            rowData={users}
+            columnDefs={userColumnDefs}
+          />
         </Row>
         <Row className="mt-4">
-          <Col>
-            <Card.Title>Clientes</Card.Title>
-          </Col>
-        </Row>
-        <Row>
-          <DynamicTable rowData={customers} columnDefs={columnDefs} />
+          <DynamicTable
+            tableLabel="Clientes"
+            rowData={customers}
+            columnDefs={customerColumnDefs}
+          />
         </Row>
       </Card.Body>
     </Card>
