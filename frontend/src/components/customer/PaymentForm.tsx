@@ -33,6 +33,7 @@ const CheckoutForm: React.FC = () => {
       return;
     }
 
+    // FIXME: Fix payment confirmation
     setIsProcessing(true);
 
     const { error, paymentIntent } = await stripe.confirmPayment({

@@ -18,7 +18,6 @@ export async function mogoDBConnect() {
   }
 }
 
-// TODO: Complete this DB initialization
 export const initializeDB = async () => {
   // Insert data on customers collection
   try {

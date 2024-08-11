@@ -2,8 +2,6 @@ import Tax from "../models/tax.model.js";
 
 import * as baseController from "../controllers/base.controller.js";
 
-// TODO: Implement functionalities
-
 export const getItem = (req, res) => {
   baseController.getItem(Tax, req, res);
 };

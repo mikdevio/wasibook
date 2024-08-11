@@ -36,7 +36,6 @@ const SignupForm: React.FC = () => {
       );
 
       if (response) {
-        // TODO: Send message to LoginForm
         setMessage("Signup successfully. Please, login now.");
         setIsSignup(true);
         navigate("/login", {

@@ -28,13 +28,13 @@ export const userLogin = async (
       body: JSON.stringify({ email, password }),
     });
 
-    // TODO: Passing user autheticated data to dashboard
+    // TODO: Passing user autheticated data to dashboard in a correct way
     const data = await response.json();
     console.log(data);
 
     if (response.ok) {
       setUser(data.user);
-      return data.user;
+      return data.user; // Pasing role directly
     } else {
       return response;
     }

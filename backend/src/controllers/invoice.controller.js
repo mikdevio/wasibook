@@ -2,7 +2,6 @@ import Invoice from "../models/invoice.model.js";
 import * as baseController from "../controllers/base.controller.js";
 import Stripe from "stripe";
 
-// TODO: Implement functionalities
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const getItem = (req, res) => {
