@@ -227,3 +227,130 @@ export const RoomFieldDetails: FieldDetails = {
   ],
   fieldExcluded: ["_id", "__t", "__v", "createdAt", "updatedAt"],
 };
+
+export const TaxFieldDetails: FieldDetails = {
+  fieldHeaders: [
+    {
+      tag: "name",
+      headerName: "Nombre",
+    },
+    {
+      tag: "description",
+      headerName: "Descripción",
+    },
+    {
+      tag: "rate",
+      headerName: "Ratio",
+    },
+  ],
+  fieldExcluded: ["_id", "__t", "__v", "createdAt", "updatedAt"],
+};
+
+// export const RoomReservedFieldDetails: FieldDetails = {
+//   fieldHeaders: [
+//     {
+//       tag: "room",
+//       headerName: "Habitación",
+//     },
+//     {
+//       tag: "checkInDate",
+//       headerName: "Fecha entrada",
+//     },
+//     {
+//       tag: "checkOutDate",
+//       headerName: "Fecha entrada",
+//     },
+//   ],
+//   fieldExcluded: ["_id", "__t", "__v", "createdAt", "updatedAt"],
+// };
+
+export type ReservationData = {
+  user: string;
+  rooms: RoomReservedData[];
+  status: "reserved" | "checked-in" | "checked-out" | "cancelled";
+};
+
+export const ReservationFieldDetails: FieldDetails = {
+  fieldHeaders: [
+    {
+      tag: "user",
+      headerName: "Cliente",
+    },
+    {
+      tag: "rooms",
+      headerName: "Reservas",
+    },
+    {
+      tag: "status",
+      headerName: "Estado",
+    },
+  ],
+  fieldExcluded: ["_id", "__t", "__v", "createdAt", "updatedAt"],
+};
+
+// const invoiceSchema = new Schema({
+//   reservation: {
+//     type: Schema.Types.ObjectId,
+//     ref: "Reservation",
+//     required: true,
+//   },
+//   amount: {
+//     type: Number,
+//     required: true,
+//   },
+//   issueDate: {
+//     type: Date,
+//     default: Date.now,
+//   },
+//   dueDate: {
+//     type: Date,
+//     required: true,
+//   },
+//   status: {
+//     type: String,
+//     enum: ["paid", "unpaid", "cancelled"],
+//   },
+//   details: {
+//     type: String,
+//     default: "",
+//   },
+// });
+
+export type InvoiceData = {
+  reservation: string;
+  amount: number;
+  issueDate: Date;
+  dueDate: Date;
+  status: "paid" | "unpaid" | "cancelled";
+  details: string;
+};
+
+export const InvoiceDataDetails: FieldDetails = {
+  fieldHeaders: [
+    {
+      tag: "reservation",
+      headerName: "Reservación",
+    },
+    {
+      tag: "amount",
+      headerName: "Cantidad",
+    },
+    {
+      tag: "issueDate",
+      headerName: "Fecha de emisión",
+    },
+    {
+      tag: "dueDate",
+      headerName: "Fecha de vencimiento",
+    },
+    {
+      tag: "status",
+      headerName: "Estado",
+    },
+    {
+      tag: "details",
+      headerName: "Detalles",
+    },
+  ],
+  fieldExcluded: ["_id", "__t", "__v", "createdAt", "updatedAt"],
+};

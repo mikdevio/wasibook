@@ -8,11 +8,6 @@ import { ROLES_GROUP } from "../settings.js";
 
 const router = express.Router();
 
-// Routes with authorization for all roles
-router
-  .route("/:id")
-  .get(VerifyAuth, VerifyRole(ROLES_GROUP.ALL), taxController.getItem);
-
 // Routes with authorization for Admins and Staff
 router
   .route("/all")
@@ -21,6 +16,11 @@ router
     VerifyRole(ROLES_GROUP.STAFF_AND_ADMIN),
     taxController.getAll
   );
+
+// Routes with authorization for all roles
+router
+  .route("/:id")
+  .get(VerifyAuth, VerifyRole(ROLES_GROUP.ALL), taxController.getItem);
 
 router
   .route("/edit/:id")

@@ -58,7 +58,7 @@ const DynamicTable = <T,>({
   );
 };
 
-// Componente para los botones de acción
+// Actions table component
 const ActionCellRenderer = () => {
   const handleEdit = () => {
     alert(`Edit`);
@@ -88,6 +88,7 @@ interface ImageCellRendererProps extends ICellRendererParams {
   };
 }
 
+// Image table components
 const ImageCellRenderer: React.FC<ImageCellRendererProps> = (props) => {
   const [imgSrc, setImgSrc] = useState<string | null>(null);
 

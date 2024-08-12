@@ -17,6 +17,7 @@ const PersonelBoard: React.FC = () => {
       const usersData = await userGetAll();
       setUsers(usersData);
     };
+
     const fetchCustomers = async () => {
       const customersData = await customerGetAll();
       setCustomers(customersData);
