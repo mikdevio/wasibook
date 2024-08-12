@@ -8,10 +8,11 @@ import NavigationBar from "../common/Navbar";
 import ConfirmationForm from "./ConfirmationForm";
 import RoomSelectionForm from "./RoomSelectionForm";
 import ReservationSummary from "./ReservationSummary";
-import { RoomData, StepState } from "../../types/Types";
+import { CustomerSidebarDetails, RoomData, StepState } from "../../types/Types";
 import { useReservation } from "../common/BookingContext";
 import { useAuth } from "../common/AuthContext";
 import { roomGetAll } from "../../services/hadlerData";
+import Sidebar from "../common/Sidebar";
 
 const CustomerBoardLayout: React.FC = () => {
   const [selectedStep, setSelectedStep] = useState<number>(1);
@@ -67,18 +68,25 @@ const CustomerBoardLayout: React.FC = () => {
   return (
     <>
       <NavigationBar />
-      <Container fluid className="mt-4">
+      <Container fluid className="ps-0">
         <Row>
-          <StepMenu
-            stepList={steps}
-            onStepSelect={setSelectedStep}
-            currentStep={selectedStep}
-          />
-        </Row>
-        <Row className="row">
-          <Col className="col-md-9 ">{renderStepComponent()}</Col>
-          <Col className="col-md-3">
-            <ReservationSummary />
+          <Col className="col-2">
+            <Sidebar details={CustomerSidebarDetails} />
+          </Col>
+          <Col>
+            <Row className="mt-4">
+              <StepMenu
+                stepList={steps}
+                onStepSelect={setSelectedStep}
+                currentStep={selectedStep}
+              />
+            </Row>
+            <Row>
+              <Col className="col-md-9 ">{renderStepComponent()}</Col>
+              <Col className="col-md-3">
+                <ReservationSummary />
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Container>

@@ -1,3 +1,12 @@
+import {
+  Building,
+  CalendarWeek,
+  Coin,
+  ColumnsGap,
+  PersonFill,
+  ReceiptCutoff,
+} from "react-bootstrap-icons";
+
 export type PriceData = {
   tag: string;
   value: number;
@@ -246,24 +255,6 @@ export const TaxFieldDetails: FieldDetails = {
   fieldExcluded: ["_id", "__t", "__v", "createdAt", "updatedAt"],
 };
 
-// export const RoomReservedFieldDetails: FieldDetails = {
-//   fieldHeaders: [
-//     {
-//       tag: "room",
-//       headerName: "Habitación",
-//     },
-//     {
-//       tag: "checkInDate",
-//       headerName: "Fecha entrada",
-//     },
-//     {
-//       tag: "checkOutDate",
-//       headerName: "Fecha entrada",
-//     },
-//   ],
-//   fieldExcluded: ["_id", "__t", "__v", "createdAt", "updatedAt"],
-// };
-
 export type ReservationData = {
   user: string;
   rooms: RoomReservedData[];
@@ -287,34 +278,6 @@ export const ReservationFieldDetails: FieldDetails = {
   ],
   fieldExcluded: ["_id", "__t", "__v", "createdAt", "updatedAt"],
 };
-
-// const invoiceSchema = new Schema({
-//   reservation: {
-//     type: Schema.Types.ObjectId,
-//     ref: "Reservation",
-//     required: true,
-//   },
-//   amount: {
-//     type: Number,
-//     required: true,
-//   },
-//   issueDate: {
-//     type: Date,
-//     default: Date.now,
-//   },
-//   dueDate: {
-//     type: Date,
-//     required: true,
-//   },
-//   status: {
-//     type: String,
-//     enum: ["paid", "unpaid", "cancelled"],
-//   },
-//   details: {
-//     type: String,
-//     default: "",
-//   },
-// });
 
 export type InvoiceData = {
   reservation: string;
@@ -353,4 +316,75 @@ export const InvoiceDataDetails: FieldDetails = {
     },
   ],
   fieldExcluded: ["_id", "__t", "__v", "createdAt", "updatedAt"],
+};
+
+export type SidebarItem = {
+  icon: any;
+  name: string;
+  url: string;
+};
+
+export type SidebarDetails = {
+  menus: SidebarItem[];
+  props: [];
+};
+
+// Sidebar menu constructors
+// Customer dashboard sidebar
+export const AdminSidebarDetails: SidebarDetails = {
+  menus: [
+    {
+      icon: <ColumnsGap />,
+      name: "Dashboard",
+      url: "/adminboard/mainboard",
+    },
+    {
+      icon: <PersonFill />,
+      name: "Personal",
+      url: "/adminboard/personel",
+    },
+    {
+      icon: <Building />,
+      name: "Habitaciones",
+      url: "/adminboard/room",
+    },
+    {
+      icon: <CalendarWeek />,
+      name: "Reservas",
+      url: "/adminboard/reservation",
+    },
+    {
+      icon: <Coin />,
+      name: "Impuestos",
+      url: "/adminboard/tax",
+    },
+    {
+      icon: <ReceiptCutoff />,
+      name: "Facturas",
+      url: "/adminboard/invoice",
+    },
+  ],
+  props: [],
+};
+
+// Admin dashboard sidebar
+export const CustomerSidebarDetails: SidebarDetails = {
+  menus: [
+    {
+      icon: <ColumnsGap />,
+      name: "Reservas",
+      url: "#",
+    },
+    {
+      icon: <Building />,
+      name: "Reservaciones",
+      url: "#",
+    },
+    {
+      icon: <PersonFill />,
+      name: "Pefil",
+      url: "#",
+    },
+  ],
+  props: [],
 };
