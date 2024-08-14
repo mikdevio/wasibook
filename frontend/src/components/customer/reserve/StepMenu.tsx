@@ -1,6 +1,6 @@
 import { Check } from "react-bootstrap-icons";
 import { Container, Card, Col, Row } from "react-bootstrap";
-import { StepData, StepState } from "../../types/Types";
+import { StepData, StepState } from "../../../types/Types";
 
 interface StepMenuProps {
   stepList: StepData[];
@@ -31,14 +31,6 @@ const StepMenu: React.FC<StepMenuProps> = ({
   );
 };
 
-interface StepBoxProps {
-  stepNumber: number;
-  stepLabel: string;
-  stepState: StepState;
-  onStepSelect: (step: number) => void;
-  isSelected: boolean;
-}
-
 const StepStyle = {
   [StepState.INCOMPLETED]: {
     background: "#f0f0f0",
@@ -57,6 +49,14 @@ const StepStyle = {
   },
 };
 
+interface StepBoxProps {
+  stepNumber: number;
+  stepLabel: string;
+  stepState: StepState;
+  onStepSelect: (step: number) => void;
+  isSelected: boolean;
+}
+
 const StepBox: React.FC<StepBoxProps> = (props) => {
   const { stepNumber, stepLabel, stepState, onStepSelect, isSelected } = props;
   const currentStyle = StepStyle[stepState];
@@ -72,7 +72,7 @@ const StepBox: React.FC<StepBoxProps> = (props) => {
           color: currentStyle.number_color,
           cursor: "pointer",
         }}
-        onClick={() => onStepSelect(stepNumber)}
+        // onClick={() => onStepSelect(stepNumber)}
       >
         {stepState === StepState.COMPLETED ? (
           <Check size={32} className="icon" />

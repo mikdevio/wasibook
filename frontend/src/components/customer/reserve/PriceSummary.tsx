@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 
-import { PricesDictionary } from "../../types/Types";
-import { useReservation } from "../common/BookingContext";
+import { PricesDictionary } from "../../../types/Types";
+import { useReservation } from "../../common/BookingContext";
 
 interface PriceSummaryProps {
   prices_dict?: PricesDictionary;
@@ -16,7 +16,7 @@ const PriceSummary: React.FC<PriceSummaryProps> = (
 
   return (
     <Container className="p-0 mt-4">
-      <Card.Title>Your Price Summary</Card.Title>
+      <Card.Title>Resúmen de costos:</Card.Title>
       {prices_dict
         ? Object.entries(bookingData.pricesDictionary).map(
             ([id, priceData]) => (
@@ -28,11 +28,11 @@ const PriceSummary: React.FC<PriceSummaryProps> = (
             )
           )
         : null}
-      <Row className="mt-4 px-2">
+      {/* <Row className="mt-4 px-2">
         <Button variant="primary" className="">
           Request to book
         </Button>
-      </Row>
+      </Row> */}
     </Container>
   );
 };

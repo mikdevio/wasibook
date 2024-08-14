@@ -10,19 +10,24 @@ import {
   Row,
 } from "react-bootstrap";
 
-import icon from "../../assets/placeholder.svg";
-import { BookingData, RoomReservedData, UserData } from "../../types/Types";
+import icon from "/img/placeholder.svg";
+import { BookingData, RoomReservedData, UserData } from "../../../types/Types";
 
 interface BookingFormProps {
   user: UserData;
   bookingData?: BookingData;
+  onNext: () => void;
 }
 
 const ExtrasForm: React.FC<BookingFormProps> = (props: BookingFormProps) => {
-  const { user, bookingData } = props;
+  const { user, bookingData, onNext } = props;
   return (
-    <div className="card shadow">
-      <div className="card-body">
+    <Card className="card shadow">
+      <Card.Header className="d-flex justify-content-between align-items-center">
+        <Card.Title>Extras</Card.Title>
+        <Button onClick={onNext}>Saltar</Button>
+      </Card.Header>
+      <Card.Body className="card-body">
         {bookingData ? (
           bookingData.reservationList.map((reserv) => (
             <ReservationCard imgURL={icon} reservationData={reserv} />
@@ -33,9 +38,8 @@ const ExtrasForm: React.FC<BookingFormProps> = (props: BookingFormProps) => {
         <DisclaimerArea />
         <DetailsForm user={user} />
         <ExtrasArea />
-        <ButtonsArea />
-      </div>
-    </div>
+      </Card.Body>
+    </Card>
   );
 };
 
@@ -199,27 +203,6 @@ const ExtrasArea: React.FC<ExtrasAreaProps> = () => {
         </Accordion>
       </Card.Body>
     </Card>
-  );
-};
-
-interface ButtonsAreaProps {}
-
-const ButtonsArea: React.FC<ButtonsAreaProps> = () => {
-  return (
-    <Container>
-      <Row>
-        <Col>
-          <Button variant="danger" className="w-100">
-            Return
-          </Button>
-        </Col>
-        <Col>
-          <Button variant="primary" className="w-100">
-            Confirm
-          </Button>
-        </Col>
-      </Row>
-    </Container>
   );
 };
 

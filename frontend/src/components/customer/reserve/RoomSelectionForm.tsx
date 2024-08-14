@@ -1,25 +1,35 @@
 import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
 import { StarFill } from "react-bootstrap-icons";
 
-import { CheckType, RoomData, RoomReservedData } from "../../types/Types";
+import { CheckType, RoomData, RoomReservedData } from "../../../types/Types";
 import React, { useEffect, useState } from "react";
 import "./CustomerBoard.css";
-import { useReservation } from "../common/BookingContext";
+import { useReservation } from "../../common/BookingContext";
 
 interface RoomSelectionFormProps {
+  onNext: () => void;
   roomList: RoomData[];
 }
 
 const RoomSelectionForm: React.FC<RoomSelectionFormProps> = (
   props: RoomSelectionFormProps
 ) => {
-  const { roomList } = props;
+  const { roomList, onNext } = props;
+  const { bookingData } = useReservation();
 
   return (
     <>
       <Card className="shadow pt-2 h-100">
-        <Card.Header>
-          <Card.Title>Rooms</Card.Title>
+        <Card.Header className="d-flex justify-content-between">
+          <Card.Title>Habitaciones</Card.Title>
+          <Button
+            onClick={onNext}
+            className={
+              bookingData.reservationList.length == 0 ? "disabled" : ""
+            }
+          >
+            Siguiente
+          </Button>
         </Card.Header>
         <Card.Body>
           <Row className="justify-content-start">

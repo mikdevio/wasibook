@@ -5,11 +5,11 @@ import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 
 import PriceSummary from "./PriceSummary";
-import { CheckData, RoomReservedData } from "../../types/Types";
-import { useReservation } from "../common/BookingContext";
+import { CheckData, RoomReservedData } from "../../../types/Types";
+import { useReservation } from "../../common/BookingContext";
 
 import "./CustomerBoard.css";
-import { getStayLength } from "../../services/utils";
+import { getStayLength } from "../../../services/utils";
 import moment from "moment";
 
 interface CheckBlockProps {
@@ -57,7 +57,7 @@ const StayLabel: React.FC<StayLabelProps> = (props: StayLabelProps) => {
   return (
     <Container className="mt-2 mb-2">
       <Row>
-        <Card.Text className="p-0 fw-bold">Total Length of Stay:</Card.Text>
+        <Card.Text className="p-0 fw-bold">Estadía:</Card.Text>
       </Row>
       <Row>{days}</Row>
     </Container>
@@ -76,7 +76,7 @@ const RoomSelectedLabel: React.FC<RoomSelectedLabelProps> = (
   return (
     <Container className="mt-2 mb-2">
       <Row>
-        <Card.Text className="p-0 fw-bold">You selected:</Card.Text>
+        <Card.Text className="p-0 fw-bold">Has seleccionado:</Card.Text>
       </Row>
       <Row className="d-flex justify-content-center align-items-center">
         <Col className="col-2">{code}</Col>
@@ -158,8 +158,9 @@ const ReservationSummary: React.FC = () => {
 
   return (
     <Card className="shadow">
-      <Card.Header>
-        <Card.Title>Reservation Summary</Card.Title>
+      <Card.Header className="d-flex justify-content-between align-items-center">
+        <Card.Title>Reservación</Card.Title>
+        <Card.Text className="text-secondary">Incompleta</Card.Text>
       </Card.Header>
       <Card.Body>
         {bookingData.reservationList.length !== 0 ? (

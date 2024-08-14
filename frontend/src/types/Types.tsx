@@ -1,6 +1,8 @@
 import {
+  BoxFill,
   Building,
   CalendarWeek,
+  CodeSlash,
   Coin,
   ColumnsGap,
   PersonFill,
@@ -164,8 +166,8 @@ export const CustomerFieldDetails: FieldDetails = {
       headerName: "Email",
     },
     {
-      tag: "email",
-      headerName: "Email",
+      tag: "loyaltyPoints",
+      headerName: "Puntos",
     },
     {
       tag: "phone",
@@ -372,18 +374,18 @@ export const CustomerSidebarDetails: SidebarDetails = {
   menus: [
     {
       icon: <ColumnsGap />,
-      name: "Reservas",
-      url: "#",
+      name: "Reservar",
+      url: "/customerboard/reserve",
     },
     {
       icon: <Building />,
       name: "Reservaciones",
-      url: "#",
+      url: "/customerboard/reserves",
     },
     {
       icon: <PersonFill />,
       name: "Pefil",
-      url: "#",
+      url: "/customerboard/profile",
     },
   ],
   props: [],

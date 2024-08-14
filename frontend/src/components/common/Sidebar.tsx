@@ -44,7 +44,6 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
               hide={open}
             />
           ))}
-          ;
         </Nav>
       </Navbar>
     </Container>

@@ -6,7 +6,7 @@ import { generateColumnDefs } from "../../services/utils";
 import { ColDef } from "ag-grid-community";
 import DynamicTable from "../common/DynamicTable";
 
-const ReservationBoard: React.FC = () => {
+const AdminReservationBoard: React.FC = () => {
   const [reservations, setReservations] = useState<ReservationData[]>([]);
 
   useEffect(() => {
@@ -43,4 +43,4 @@ const ReservationBoard: React.FC = () => {
   );
 };
 
-export default ReservationBoard;
+export default AdminReservationBoard;

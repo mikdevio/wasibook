@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import InputGroup from "./InputGroup";
 import { userLoginForm, userLoginSchema } from "../schemas/user";
 import { userLogin } from "../services/auth";
-import DismissibleAlert from "./common/Alert";
+import DismissibleAlert from "./common/DismissibleAlert";
 import { useAuth } from "./common/AuthContext";
 
 const LoginForm: React.FC = () => {
@@ -29,7 +29,7 @@ const LoginForm: React.FC = () => {
         setIsLogin(true);
 
         if (response.role === "customer") {
-          navigate("/clientboard");
+          navigate("/customerboard/reserve");
         } else {
           navigate("/adminboard/mainboard");
         }

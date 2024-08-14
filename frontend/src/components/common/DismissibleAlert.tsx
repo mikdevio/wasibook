@@ -16,7 +16,7 @@ const DismissibleAlert: React.FC<DismissibleAlertProps> = (
       setShow(true);
       const timer = setTimeout(() => {
         setShow(false);
-      }, 5000); // Cambia 5000 por el tiempo deseado en milisegundos
+      }, 10000);
 
       return () => clearTimeout(timer);
     }

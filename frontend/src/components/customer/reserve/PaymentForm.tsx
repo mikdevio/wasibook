@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -7,10 +7,19 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { useReservation } from "../common/BookingContext";
-import { useAuth } from "../common/AuthContext";
+import { useReservation } from "../../common/BookingContext";
+import { useAuth } from "../../common/AuthContext";
+import { Stripe as StripeIcon } from "react-bootstrap-icons";
+import DismissibleAlert from "../../common/DismissibleAlert";
 
-const CheckoutForm: React.FC = () => {
+interface CheckoutFormProps {
+  onNext: () => void;
+}
+
+const CheckoutForm: React.FC<CheckoutFormProps> = (
+  props: CheckoutFormProps
+) => {
+  const { onNext } = props;
   const stripe = useStripe();
   const elements = useElements();
   const { bookingData } = useReservation();
@@ -21,6 +30,7 @@ const CheckoutForm: React.FC = () => {
 
   const [message, setMessage] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [isPayed, setIsPayed] = useState<boolean>(false);
 
   useEffect(() => {
     setAmount(bookingData.pricesDictionary.total.value);
@@ -47,7 +57,8 @@ const CheckoutForm: React.FC = () => {
     if (error) {
       setMessage(error.message || "");
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
-      setMessage("Payment status: " + paymentIntent.status + "!!");
+      setMessage("El pago fue realizado de forma exitosa!!");
+      setIsPayed(true);
     } else {
       setMessage("An unexpected error occured.");
     }
@@ -57,44 +68,61 @@ const CheckoutForm: React.FC = () => {
 
   return (
     <Card>
-      <Card.Title>PaymentForm</Card.Title>
+      <Card.Header className="d-flex justify-content-between align-items-center">
+        <Card.Title>Métodos de pago</Card.Title>
+        <Button onClick={onNext} className={isPayed ? "" : "disabled"}>
+          Siguiente
+        </Button>
+      </Card.Header>
       <Card.Body>
         <Form onSubmit={handleSubmit} id="payment-form">
-          <Row className="text-center">
+          <Row className="d-flex align-items-center text-center">
             <Col className="d-flex flex-column">
               <Form.Label>Cantidad por pagar:</Form.Label>
               <Form.Label className="fs-1 h1">
                 {amount?.toFixed(2)} USD
               </Form.Label>
             </Col>
-          </Row>
-          <Row>
             <Col>
-              <PaymentElement id="payment-element" />
+              <Row className="text-start mb-2">
+                <Card.Title className="fs-3 d-flex align-items-center">
+                  <StripeIcon />
+                  <span className="ps-2">Stripe</span>
+                </Card.Title>
+              </Row>
+              <Row>
+                <PaymentElement id="payment-element" />
+              </Row>
+              <Row>
+                <Col className="mt-4">
+                  <Button
+                    id="submit"
+                    type="submit"
+                    disabled={isProcessing || !stripe || !elements}
+                    className="w-100"
+                  >
+                    <span id="button-text">
+                      {isProcessing ? "Procesando ... " : "Pagar"}
+                    </span>
+                  </Button>
+                </Col>
+              </Row>
             </Col>
           </Row>
           <Row className="mt-4">
-            <Col>
-              <Button
-                id="submit"
-                type="submit"
-                disabled={isProcessing || !stripe || !elements}
-                className="w-100"
-              >
-                <span id="button-text">
-                  {isProcessing ? "Procesando ... " : "Paga ahora"}
-                </span>
-              </Button>
-            </Col>
+            {message && <DismissibleAlert message={message} />}
           </Row>
-          {message && <div id="payment-message">{message}</div>}
         </Form>
       </Card.Body>
     </Card>
   );
 };
 
-const PaymentForm: React.FC = () => {
+interface PaymentFormProps {
+  onNext: () => void;
+}
+const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
+  const { onNext } = props;
   const { user } = useAuth();
   const { bookingData } = useReservation();
   const [stripePromise, setStripePromise] =
@@ -130,7 +158,7 @@ const PaymentForm: React.FC = () => {
     <>
       {clientSecret && stripePromise && (
         <Elements stripe={stripePromise} options={{ clientSecret }}>
-          <CheckoutForm />
+          <CheckoutForm onNext={onNext} />
         </Elements>
       )}
     </>
