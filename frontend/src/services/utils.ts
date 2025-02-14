@@ -1,6 +1,14 @@
 import moment from "moment";
 import { ColDef } from "ag-grid-community";
-import { FieldDetails } from "../types/Types";
+import {
+  FieldDetails,
+  RoomReservedData,
+  CustomerData,
+  BkRoomReservationData,
+  BkReservationData,
+  BookingData,
+  InvoiceData,
+} from "../types/Types";
 
 // Function to caculate days between to dates
 export const getStayLength = (dateIn: Date, dateOut: Date): number => {
@@ -48,3 +56,43 @@ export function generateColumnDefs<T>(obj: T, details: FieldDetails): ColDef[] {
 
   return cols;
 }
+
+// Function to generate objecto to be sent to BK
+export const getReservation = (
+  customerData: CustomerData,
+  roomReservedList: RoomReservedData[]
+) => {
+  const roomsReserved: BkRoomReservationData[] = roomReservedList.map(
+    (roomData) => ({
+      room: roomData.roomData._id,
+      checkInDate: roomData.checkinData.date,
+      checkOutDate: roomData.checkoutData.date,
+    })
+  );
+
+  // 1. crear objecto BkReservationData
+  const newReservation: BkReservationData = {
+    user: customerData._id,
+    rooms: roomsReserved,
+    status: "confirmed",
+  };
+
+  return newReservation;
+};
+
+export const getInvoice = (reservId: string, bookingData: BookingData) => {
+  const totalPriceData = Object.values(bookingData.pricesDictionary).find(
+    (price) => price.tag === "Total"
+  );
+
+  const newInvoice: InvoiceData = {
+    reservation: reservId,
+    amount: totalPriceData ? totalPriceData.value : 0,
+    issueDate: new Date(),
+    dueDate: new Date(),
+    status: "paid",
+    details: "Not defined",
+  };
+
+  return newInvoice;
+};

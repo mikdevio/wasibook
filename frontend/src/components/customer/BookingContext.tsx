@@ -70,7 +70,7 @@ export const ReservationProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     updatePriceDictionary();
-  }, [bookingData.reservationList]);
+  }, [bookingData.reservationList]); //FIXME: Corrige esta advertencia
 
   const changeDateReservation = (
     roomId: string,

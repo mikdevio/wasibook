@@ -1,5 +1,9 @@
+import { unknown } from "zod";
 import {
+  BkReservationData,
   CustomerData,
+  FtInvoiceData,
+  FtReservationData,
   InvoiceData,
   ReservationData,
   RoomData,
@@ -124,6 +128,36 @@ export const reservationGetAll = async (): Promise<ReservationData[]> => {
   }
 };
 
+export const reservationCreate = async (
+  reservation: BkReservationData
+): Promise<FtReservationData | undefined> => {
+  try {
+    const response = await fetch("http://localhost:3000/reservation/create", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(reservation),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      return data.data as FtReservationData;
+    } else {
+      return {
+        _id: "0",
+        rooms: [],
+        user: "0",
+        status: "unconfirmed",
+      };
+    }
+  } catch (error) {
+    console.error("Error while sending data to the server:", error);
+  }
+};
+
 export const invoiceGetAll = async (): Promise<InvoiceData[]> => {
   try {
     const response = await fetch("http://localhost:3000/invoice/all", {
@@ -144,5 +178,39 @@ export const invoiceGetAll = async (): Promise<InvoiceData[]> => {
   } catch (error) {
     console.error("Error while getting data from server:", error);
     return [];
+  }
+};
+
+export const invoiceCreate = async (
+  invoiceData: InvoiceData
+): Promise<FtInvoiceData | undefined> => {
+  try {
+    const response = await fetch("http://localhost:3000/invoice/create", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(invoiceData),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      return data.data as FtInvoiceData;
+    } else {
+      const zeroInvoice: FtInvoiceData = {
+        _id: "",
+        amount: 0,
+        issueDate: new Date(),
+        dueDate: new Date(),
+        status: "unpaid",
+        details: "",
+        reservation: "",
+      };
+      return zeroInvoice;
+    }
+  } catch (error) {
+    console.error("Error while sending data to the server:", error);
   }
 };

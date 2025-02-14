@@ -10,7 +10,7 @@ import CustomerBoardLayout from "./components/customer/CustomerBoardLayout";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import { ReservationProvider } from "./components/common/BookingContext";
+import { ReservationProvider } from "./components/customer/BookingContext";
 import MainBoard from "./components/admin/MainBoard";
 import PersonelBoard from "./components/admin/PersonelBoard";
 import RoomBoard from "./components/admin/RoomBoard";

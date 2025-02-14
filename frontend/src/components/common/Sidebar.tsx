@@ -36,8 +36,9 @@ const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
             hide={open}
             onClick={handleOpen}
           />
-          {details.menus.map((item) => (
+          {details.menus.map((item, i) => (
             <SidebarItem
+              key={i}
               icon={item.icon}
               name={item.name}
               url={item.url}

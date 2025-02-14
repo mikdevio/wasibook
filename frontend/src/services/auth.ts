@@ -16,8 +16,8 @@ export const checkAuth = async (): Promise<boolean> => {
 export const userLogin = async (
   email: string,
   password: string,
-  setUser: (user: any) => void
-): Promise<any> => {
+  setUser: (user: unknown) => void
+): Promise<unknown> => {
   try {
     const response = await fetch("http://localhost:3000/user/login", {
       method: "POST",

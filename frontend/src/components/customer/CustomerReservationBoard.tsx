@@ -9,7 +9,7 @@ import RoomSelectionForm from "./reserve/RoomSelectionForm";
 import ReservationSummary from "./reserve/ReservationSummary";
 
 import { RoomData, StepData, StepState } from "../../types/Types";
-import { useReservation } from "../common/BookingContext";
+import { useReservation } from "./BookingContext";
 import { useAuth } from "../common/AuthContext";
 import { roomGetAll } from "../../services/hadlerData";
 

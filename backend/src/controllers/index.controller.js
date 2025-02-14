@@ -3,7 +3,7 @@ import path from "path";
 export const home = (req, res) => {
   res.status(200).json({
     status: "Ok",
-    message: "Welcome to Wasibook API interface",
+    message: "Welcome to Wasibook API v1.0.0",
   });
 };
 

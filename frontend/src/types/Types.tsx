@@ -1,8 +1,6 @@
 import {
-  BoxFill,
   Building,
   CalendarWeek,
-  CodeSlash,
   Coin,
   ColumnsGap,
   PersonFill,
@@ -60,6 +58,37 @@ export type BookingData = {
   pricesDictionary: PricesDictionary;
 };
 
+// Clases relacionadas con el backend
+export type BkRoomReservationData = {
+  room: string;
+  checkInDate: Date;
+  checkOutDate: Date;
+};
+
+export type BkReservationData = {
+  user: string;
+  rooms: BkRoomReservationData[];
+  status: "unconfirmed" | "confirmed" | "abandoned" | "cancelled";
+};
+
+// Clases relacionadas con el frontend
+export type FtReservationData = {
+  _id: string;
+  user: string;
+  rooms: BkRoomReservationData[];
+  status: "unconfirmed" | "confirmed" | "abandoned" | "cancelled";
+};
+
+export type FtInvoiceData = {
+  _id: string;
+  reservation: string;
+  amount: number;
+  issueDate: Date;
+  dueDate: Date;
+  status: "paid" | "unpaid" | "cancelled";
+  details: string;
+};
+
 export enum StepState {
   INCOMPLETED,
   IN_PROCESS,
@@ -73,6 +102,7 @@ export type StepData = {
 };
 
 export type UserData = {
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -84,11 +114,12 @@ export type UserData = {
 };
 
 export type CustomerData = {
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  img: String; // mejorar tipo
+  img: string; // mejorar tipo
   phone: string;
   address: string;
   taxNumber: string;
@@ -260,7 +291,7 @@ export const TaxFieldDetails: FieldDetails = {
 export type ReservationData = {
   user: string;
   rooms: RoomReservedData[];
-  status: "reserved" | "checked-in" | "checked-out" | "cancelled";
+  status: "unconfirmed" | "confirmed" | "abandoned" | "cancelled";
 };
 
 export const ReservationFieldDetails: FieldDetails = {
@@ -321,7 +352,7 @@ export const InvoiceDataDetails: FieldDetails = {
 };
 
 export type SidebarItem = {
-  icon: any;
+  icon: unknown;
   name: string;
   url: string;
 };

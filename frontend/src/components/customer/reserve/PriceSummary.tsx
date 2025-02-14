@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 
 import { PricesDictionary } from "../../../types/Types";
-import { useReservation } from "../../common/BookingContext";
+import { useReservation } from "../BookingContext";
 
 interface PriceSummaryProps {
   prices_dict?: PricesDictionary;

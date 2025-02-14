@@ -6,7 +6,7 @@ import "react-datetime/css/react-datetime.css";
 
 import PriceSummary from "./PriceSummary";
 import { CheckData, RoomReservedData } from "../../../types/Types";
-import { useReservation } from "../../common/BookingContext";
+import { useReservation } from "../BookingContext";
 
 import "./CustomerBoard.css";
 import { getStayLength } from "../../../services/utils";

@@ -4,7 +4,7 @@ import { StarFill } from "react-bootstrap-icons";
 import { CheckType, RoomData, RoomReservedData } from "../../../types/Types";
 import React, { useEffect, useState } from "react";
 import "./CustomerBoard.css";
-import { useReservation } from "../../common/BookingContext";
+import { useReservation } from "../BookingContext";
 
 interface RoomSelectionFormProps {
   onNext: () => void;

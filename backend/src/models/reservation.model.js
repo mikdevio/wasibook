@@ -31,8 +31,8 @@ const reservationSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["reserved", "checked-in", "checked-out", "cancelled"],
-      default: "reserved",
+      enum: ["uncofirmed", "confirmed", "abandoned", "cancelled"],
+      default: "uncofirmed",
     },
   },
   { timestamps: true }

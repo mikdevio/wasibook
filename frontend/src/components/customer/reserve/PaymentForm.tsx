@@ -7,10 +7,12 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { useReservation } from "../../common/BookingContext";
+import { useReservation } from "../BookingContext";
 import { useAuth } from "../../common/AuthContext";
 import { Stripe as StripeIcon } from "react-bootstrap-icons";
 import DismissibleAlert from "../../common/DismissibleAlert";
+import { invoiceCreate, reservationCreate } from "../../../services/hadlerData";
+import { getInvoice, getReservation } from "../../../services/utils";
 
 interface CheckoutFormProps {
   onNext: () => void;
@@ -22,6 +24,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = (
   const { onNext } = props;
   const stripe = useStripe();
   const elements = useElements();
+  const { user, setUser } = useAuth();
   const { bookingData } = useReservation();
 
   const [amount, setAmount] = useState<number | undefined>(
@@ -59,6 +62,17 @@ const CheckoutForm: React.FC<CheckoutFormProps> = (
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
       setMessage("El pago fue realizado de forma exitosa!!");
       setIsPayed(true);
+
+      //FIXME: Corregir error de mensajes de confirmacion
+      const reservationSaved = await reservationCreate(
+        getReservation(user, bookingData.reservationList)
+      );
+      setMessage("La reservacion fue guardada con exito!!!");
+
+      const invoiceSaved = await invoiceCreate(
+        getInvoice(reservationSaved?._id || "", bookingData)
+      );
+      setMessage(`Factura registrada con exito ${invoiceSaved?._id}`);
     } else {
       setMessage("An unexpected error occured.");
     }
@@ -149,7 +163,7 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
         email: user.email,
       }),
     }).then(async (result) => {
-      var { clientSecret } = await result.json();
+      const { clientSecret } = await result.json();
       setClientSecret(clientSecret);
     });
   }, []);
