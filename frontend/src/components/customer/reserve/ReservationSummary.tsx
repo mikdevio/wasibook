@@ -136,7 +136,7 @@ const RoomReservationCard: React.FC<RoomReservationCardProps> = (
       </Row>
       <Row className="d-flex justify-content-center mb-2">
         <Col className="text-center">
-          <Card.Link style={{ cursor: "pointer" }}>Change</Card.Link>
+          {/* <Card.Link style={{ cursor: "pointer" }}>Change</Card.Link> */}
         </Col>
         <Col className="text-center">
           <Card.Link
@@ -165,7 +165,7 @@ const ReservationSummary: React.FC = () => {
       <Card.Body>
         {bookingData.reservationList.length !== 0 ? (
           bookingData.reservationList.map((r, id) => (
-            <RoomReservationCard id={id} reservation={r} />
+            <RoomReservationCard id={id} key={id} reservation={r} />
           ))
         ) : (
           <span className="mt-5 text-secondary text-center fs-5">

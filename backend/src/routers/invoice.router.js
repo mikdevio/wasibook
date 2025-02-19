@@ -36,7 +36,7 @@ router
   .route("/create")
   .post(
     VerifyAuth,
-    VerifyRole(ROLES_GROUP.STAFF_AND_ADMIN),
+    VerifyRole(ROLES_GROUP.ALL),
     invoiceController.createItem
   );
 

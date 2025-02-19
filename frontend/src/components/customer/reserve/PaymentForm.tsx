@@ -69,10 +69,16 @@ const CheckoutForm: React.FC<CheckoutFormProps> = (
       );
       setMessage("La reservacion fue guardada con exito!!!");
 
-      const invoiceSaved = await invoiceCreate(
-        getInvoice(reservationSaved?._id || "", bookingData)
-      );
-      setMessage(`Factura registrada con exito ${invoiceSaved?._id}`);
+      console.log(reservationSaved);
+
+      try {
+        const invoiceSaved = await invoiceCreate(
+          getInvoice(reservationSaved?._id || "", bookingData)
+        );
+        setMessage(`Factura registrada con exito ${invoiceSaved?._id}`);
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       setMessage("An unexpected error occured.");
     }

@@ -62,7 +62,7 @@ interface RoomCardProps {
 
 const RoomCard: React.FC<RoomCardProps> = (props: RoomCardProps) => {
   const { roomData } = props;
-  const [imgSrc, setImgSrc] = useState<any | null>(null);
+  const [imgSrc, setImgSrc] = useState<string | null>(null);
   const { addReservation, updatePriceDictionary } = useReservation();
 
   const starsCount = Array.from({ length: roomData.stars });

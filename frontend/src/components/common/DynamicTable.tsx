@@ -184,12 +184,12 @@ const ListCellRenderer: React.FC<ListCellRendererProps> = (
 interface ShowModalProps {
   show: boolean;
   onClose: () => void;
-  modalData: Record<string, unknown>;
+  modalData: Record<string, never>;
 }
 
 const ShowModal: React.FC<ShowModalProps> = (props: ShowModalProps) => {
   return (
-    <Modal show={props.show} onHide={props.onClose} size="md">
+    <Modal show={props.show} onHide={props.onClose}>
       <Modal.Header closeButton>
         <Modal.Title>View modal</Modal.Title>
       </Modal.Header>
@@ -206,7 +206,7 @@ const ShowModal: React.FC<ShowModalProps> = (props: ShowModalProps) => {
 };
 
 // Función recursiva para generar los campos del formulario
-const renderFields = (data: Record<string, any>, prefix: string = "") => {
+const renderFields = (data: Record<string, never>, prefix: string = "") => {
   return Object.entries(data).map(([key, value]) => {
     const fieldName = prefix ? `${prefix}.${key}` : key; // Para mostrar claves jerárquicas
 

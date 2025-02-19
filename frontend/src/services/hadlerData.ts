@@ -12,17 +12,27 @@ import {
 
 export const roomGetAll = async (): Promise<RoomData[]> => {
   try {
-    const response = await fetch("http://localhost:3000/room/all", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const populateOptions = { path: "taxes" };
+    const queryParam = populateOptions
+      ? `?populateOptions=${encodeURIComponent(
+          JSON.stringify(populateOptions)
+        )}`
+      : "";
+
+    const response = await fetch(
+      `http://localhost:3000/room/all${queryParam}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const data = await response.json();
 
-    // console.log(data);
+    console.log(data);
 
     if (response.ok) {
       return data.data as RoomData[];
