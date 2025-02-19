@@ -19,15 +19,24 @@ export const getItem = async (Model, req, res) => {
   }
 };
 
-export const getAll = async (Model, req, res, populateOptions = "") => {
+export const getAll = async (Model, req, res) => {
   try {
+
+    const { populateOptions } = req.query;
+
+    
+
     let query = Model.find({});
 
     if (populateOptions) {
-      query = query.populate(populateOptions);
+      const options = JSON.parse(populateOptions);
+      // console.log(options);
+      query = query.populate(options);
     }
 
     const itemList = await query;
+
+    // console.log(itemList);
 
     res.status(200).json({
       data: itemList,

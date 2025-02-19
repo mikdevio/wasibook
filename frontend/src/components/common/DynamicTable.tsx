@@ -3,8 +3,8 @@ import { AgGridReact } from "ag-grid-react";
 import { ColDef, ICellRendererParams } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { Button, Card, Col, Row } from "react-bootstrap";
-import { Pen, Trash } from "react-bootstrap-icons";
+import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
+import { EyeFill, Pen, Trash } from "react-bootstrap-icons";
 
 interface DynamicTableProps<T> {
   tableLabel: string;
@@ -27,6 +27,7 @@ const DynamicTable = <T,>({
   const components = {
     actionCellRenderer: ActionCellRenderer,
     imageCellRenderer: ImageCellRenderer,
+    listCellRenderer: ListCellRenderer,
   };
 
   return (
@@ -36,7 +37,7 @@ const DynamicTable = <T,>({
           <Card.Title>{tableLabel}</Card.Title>
         </Col>
         <Col className="text-end">
-          <Button className="btn-sm">Agregar</Button>
+          <Button className="btn-sm">Nuevo</Button>
         </Col>
       </Row>
       <Row>
@@ -58,24 +59,58 @@ const DynamicTable = <T,>({
   );
 };
 
+interface ActionCellRendererProps extends ICellRendererParams {
+  // id_in: string;
+}
+
 // Actions table component
-const ActionCellRenderer = () => {
+const ActionCellRenderer: React.FC<ActionCellRendererProps> = (
+  props: ActionCellRendererProps
+) => {
+  const { data } = props;
+  const [id, setID] = useState<string>(data._id);
+
+  const [showModal, setShowModal] = useState(false);
+
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
+  const handleView = () => {
+    // let xdata = "";
+    // if (data.user.firstName && data.user.lastName) {
+    //   xdata +=
+    //     "Cliente: " + data.user.firstName + " " + data.user.lastName + " ";
+    // }
+    // if (data.rooms) {
+    //   xdata += "Habitaciones: ";
+    //   data.rooms.map(
+    //     (room) => (xdata += room.room.code + " " + room.checkInDate)
+    //   );
+    // }
+    // alert(`View ${id}  ${xdata}`);
+    handleShowModal();
+  };
+
   const handleEdit = () => {
-    alert(`Edit`);
+    alert(`Edit ${id}`);
   };
 
   const handleDelete = () => {
-    alert(`Delete`);
+    alert(`Delete ${id}`);
   };
 
   return (
     <div className="d-flex justify-content-center align-items-center">
-      <Button className="btn-sm btn-primary" onClick={handleEdit}>
+      <Button className="btn-sm btn-secondary" onClick={handleView}>
+        <EyeFill />
+      </Button>
+      <Button className="btn-sm btn-primary ms-2" onClick={handleEdit}>
         <Pen />
       </Button>
       <Button className="btn-sm btn-danger ms-2" onClick={handleDelete}>
         <Trash />
       </Button>
+      <ShowModal show={showModal} onClose={handleCloseModal} modalData={data} />
     </div>
   );
 };
@@ -121,6 +156,81 @@ const ImageCellRenderer: React.FC<ImageCellRendererProps> = (props) => {
       )}
     </div>
   );
+};
+
+interface ListCellRendererProps extends ICellRendererParams {
+  itemList: string[];
+}
+
+const ListCellRenderer: React.FC<ListCellRendererProps> = (
+  props: ListCellRendererProps
+) => {
+  const { itemList } = props;
+  const [list, setList] = useState<string[]>(itemList);
+
+  useEffect(() => {}, [list]);
+
+  return (
+    <div>
+      <ul>
+        {list.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+interface ShowModalProps {
+  show: boolean;
+  onClose: () => void;
+  modalData: Record<string, unknown>;
+}
+
+const ShowModal: React.FC<ShowModalProps> = (props: ShowModalProps) => {
+  return (
+    <Modal show={props.show} onHide={props.onClose} size="md">
+      <Modal.Header closeButton>
+        <Modal.Title>View modal</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>{renderFields(props.modalData)}</Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="primary" onClick={() => props.onClose()}>
+          Cerrar
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
+// Función recursiva para generar los campos del formulario
+const renderFields = (data: Record<string, any>, prefix: string = "") => {
+  return Object.entries(data).map(([key, value]) => {
+    const fieldName = prefix ? `${prefix}.${key}` : key; // Para mostrar claves jerárquicas
+
+    if (typeof value === "object" && value !== null && key !== "img") {
+      // Si el valor es un objeto, renderizamos los subcampos recursivamente
+      return (
+        <div key={fieldName} className="mt-2">
+          <h6>{fieldName}</h6>
+          <div style={{ marginLeft: "20px" }}>
+            {renderFields(value, fieldName)}{" "}
+            {/* Llamada recursiva para subcampos */}
+          </div>
+        </div>
+      );
+    } else {
+      // Si el valor no es un objeto, mostramos el campo de formulario
+      return (
+        <Form.Group key={fieldName} controlId={`form-${fieldName}`}>
+          <Form.Label>{fieldName}</Form.Label>
+          <Form.Control type="text" value={value} readOnly />
+        </Form.Group>
+      );
+    }
+  });
 };
 
 export default DynamicTable;

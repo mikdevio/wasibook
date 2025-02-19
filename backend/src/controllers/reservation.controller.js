@@ -1,6 +1,7 @@
 import Reservation from "../models/reservation.model.js";
 
 import * as baseController from "../controllers/base.controller.js";
+import { populate } from "dotenv";
 
 export const getItem = (req, res) => {
   baseController.getItem(Reservation, req, res);

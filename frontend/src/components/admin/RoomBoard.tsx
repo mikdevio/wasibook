@@ -14,6 +14,7 @@ const RoomBoard: React.FC = () => {
     const fetchRooms = async () => {
       const roomsData = await roomGetAll();
       setRooms(roomsData);
+      console.log(roomsData);
     };
 
     fetchRooms();

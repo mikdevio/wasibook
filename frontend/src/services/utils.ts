@@ -22,7 +22,7 @@ export const getStayLength = (dateIn: Date, dateOut: Date): number => {
 export function generateColumnDefs<T>(obj: T, details: FieldDetails): ColDef[] {
   let cols: ColDef[] = [];
   const objectKeys = obj as Record<string, unknown>;
-
+  console.log(objectKeys);
   for (const key in objectKeys) {
     // console.log(key, details.fieldExcluded.includes(key));
     if (
@@ -41,6 +41,18 @@ export function generateColumnDefs<T>(obj: T, details: FieldDetails): ColDef[] {
           headerName: "Imagen",
           cellRenderer: "imageCellRenderer",
         });
+      } else if (typeof key === "object") {
+        // FIXME: no se muestra la lista de elementos no detecta el tipo de datos
+        cols.push({
+          field: key,
+          headerName:
+            details.fieldHeaders.filter((f) => f.tag === key)[0]?.headerName ||
+            "Lista de Objetos",
+          cellRenderer: "listCellRenderer",
+          cellRendererParams: {
+            itemList: ["Uno", "Dos", "Tres"],
+          },
+        });
       }
     }
   }
@@ -51,6 +63,9 @@ export function generateColumnDefs<T>(obj: T, details: FieldDetails): ColDef[] {
       headerName: "Acciones",
       field: "actions",
       cellRenderer: "actionCellRenderer",
+      cellRendererParams: {
+        id_in: objectKeys?._id,
+      },
     },
   ];
 

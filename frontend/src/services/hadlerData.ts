@@ -1,4 +1,3 @@
-import { unknown } from "zod";
 import {
   BkReservationData,
   CustomerData,
@@ -107,13 +106,26 @@ export const taxesGetAll = async (): Promise<TaxData[]> => {
 
 export const reservationGetAll = async (): Promise<ReservationData[]> => {
   try {
-    const response = await fetch("http://localhost:3000/reservation/all", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const populateOptions = [
+      { path: "user", select: "firstName lastName" },
+      { path: "rooms.room", select: "code" },
+    ];
+    const queryParam = populateOptions
+      ? `?populateOptions=${encodeURIComponent(
+          JSON.stringify(populateOptions)
+        )}`
+      : "";
+
+    const response = await fetch(
+      `http://localhost:3000/reservation/all${queryParam}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const data = await response.json();
 
