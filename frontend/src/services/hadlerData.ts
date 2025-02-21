@@ -32,7 +32,7 @@ export const roomGetAll = async (): Promise<RoomData[]> => {
 
     const data = await response.json();
 
-    console.log(data);
+    // console.log(data);
 
     if (response.ok) {
       return data.data as RoomData[];

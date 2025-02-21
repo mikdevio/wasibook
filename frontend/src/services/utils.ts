@@ -22,7 +22,7 @@ export function generateColumnDefs<T>(obj: T, details: FieldDetails): ColDef[] {
   let cols: ColDef[] = [];
   const objectKeys = obj as Record<string, unknown>;
 
-  console.log(obj);
+  // console.log(obj);
   for (const key in objectKeys) {
     if (
       Object.prototype.hasOwnProperty.call(objectKeys, key) &&
@@ -31,25 +31,42 @@ export function generateColumnDefs<T>(obj: T, details: FieldDetails): ColDef[] {
       const fieldHeader = details.fieldHeaders.find((f) => f.tag === key);
       const value = objectKeys[key];
 
-      if (key === "img") {
+      if (key === "user" && typeof value === "object" && value !== null) {
+        // Extraer firstName y lastName si existen
+        if ("firstName" in value) {
+          cols.push({
+            field: "user.firstName",
+            headerName: "Nombres cliente",
+          });
+        }
+        if ("lastName" in value) {
+          cols.push({
+            field: "user.lastName",
+            headerName: "Apellidos cliente",
+          });
+        }
+      } else if (key === "img") {
         cols.push({
           field: key,
           headerName: "Imagen",
           cellRenderer: "imageCellRenderer",
         });
       } else if (Array.isArray(value)) {
-        console.log(`Como array => ${key}`);
-        // Si el array contiene objetos, usar un cellRenderer especializado
+        // console.log(`Como array => ${key}`);
         if (typeof value[0] === "object" && value[0] !== null) {
           cols.push({
             field: key,
-            headerName: fieldHeader?.headerName || "Lista de Objetos",
+            headerName: fieldHeader?.headerName || "Cuartos",
             cellRenderer: "arrayObjectCellRenderer",
             cellRendererParams: {
-              fieldToShow:
+              objectTag:
                 details.fieldHeaders
                   .find((f) => f.tag.startsWith(`${key}.`))
                   ?.tag.split(".")[1] || "name",
+              fieldToShow:
+                details.fieldHeaders
+                  .find((f) => f.tag.startsWith(`${key}.`))
+                  ?.tag.split(".")[2] || "name",
             },
           });
         } else {
@@ -63,8 +80,25 @@ export function generateColumnDefs<T>(obj: T, details: FieldDetails): ColDef[] {
         const nestedField = details.fieldHeaders.find((f) =>
           f.tag.startsWith(`${key}.`)
         );
-        console.log(`Como objeto => ${key}`);
-        if (nestedField) {
+        // console.log(`Como objeto => ${key}`);
+
+        // Caso especial para "room" (si es el objeto que representa el cuarto)
+        if (key === "room" && typeof value === "object" && value !== null) {
+          if ("name" in value) {
+            // Mostrar el nombre del cuarto (si tiene la propiedad "name")
+            cols.push({
+              field: "room.name",
+              headerName: "Nombre del cuarto",
+            });
+          } else {
+            // Si no tiene un "name", mostrar solo el objeto
+            cols.push({
+              field: key,
+              headerName: fieldHeader?.headerName || "Objeto",
+              cellRenderer: "objectCellRenderer",
+            });
+          }
+        } else if (nestedField) {
           const nestedKey = nestedField.tag.split(".").slice(1).join(".");
           cols.push({
             field: `${key}.${nestedKey}`,
@@ -98,6 +132,93 @@ export function generateColumnDefs<T>(obj: T, details: FieldDetails): ColDef[] {
 
   return cols;
 }
+
+// export function generateColumnDefs<T>(obj: T, details: FieldDetails): ColDef[] {
+//   let cols: ColDef[] = [];
+//   const objectKeys = obj as Record<string, unknown>;
+//   console.log(objectKeys);
+
+//   for (const field of details.fieldHeaders) {
+//     const { tag, headerName } = field;
+//     const keyParts = tag.split(".");
+//     const topLevelKey = keyParts[0];
+//   }
+
+//   for (const key in objectKeys) {
+//     if (
+//       Object.prototype.hasOwnProperty.call(objectKeys, key) &&
+//       !details.fieldExcluded.includes(key)
+//     ) {
+//       const fieldHeader = details.fieldHeaders.find((f) => f.tag === key);
+//       const value = objectKeys[key];
+
+//       if (key === "img") {
+//         cols.push({
+//           field: key,
+//           headerName: "Imagen",
+//           cellRenderer: "imageCellRenderer",
+//         });
+//       } else if (Array.isArray(value)) {
+//         // console.log(`Como array => ${key}`);
+//         // Si el array contiene objetos, usar un cellRenderer especializado
+//         if (typeof value[0] === "object" && value[0] !== null) {
+//           cols.push({
+//             field: key,
+//             headerName: fieldHeader?.headerName || "Lista de Objetos",
+//             cellRenderer: "arrayObjectCellRenderer",
+//             cellRendererParams: {
+//               fieldToShow:
+//                 details.fieldHeaders
+//                   .find((f) => f.tag.startsWith(`${key}.`))
+//                   ?.tag.split(".")[1] || "name",
+//             },
+//           });
+//         } else {
+//           cols.push({
+//             field: key,
+//             headerName: fieldHeader?.headerName || "Lista de Elementos",
+//             cellRenderer: "listCellRenderer",
+//           });
+//         }
+//       } else if (typeof value === "object" && value !== null) {
+//         const nestedField = details.fieldHeaders.find((f) =>
+//           f.tag.startsWith(`${key}.`)
+//         );
+//         // console.log(`Como objeto => ${key}`);
+//         if (nestedField) {
+//           const nestedKey = nestedField.tag.split(".").slice(1).join(".");
+//           cols.push({
+//             field: `${key}.${nestedKey}`,
+//             headerName: nestedField.headerName,
+//           });
+//         } else {
+//           cols.push({
+//             field: key,
+//             headerName: fieldHeader?.headerName || "Objeto",
+//             cellRenderer: "objectCellRenderer",
+//           });
+//         }
+//       } else {
+//         cols.push({
+//           field: key,
+//           headerName: fieldHeader?.headerName || key,
+//         });
+//       }
+//     }
+//   }
+//
+//   // Agregar columna de Acciones
+//   cols.push({
+//     headerName: "Acciones",
+//     field: "actions",
+//     cellRenderer: "actionCellRenderer",
+//     cellRendererParams: {
+//       id_in: objectKeys?._id,
+//     },
+//   });
+
+//   return cols;
+// }
 
 // Function to generate objecto to be sent to BK
 export const getReservation = (

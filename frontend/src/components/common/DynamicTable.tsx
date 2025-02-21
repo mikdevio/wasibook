@@ -29,6 +29,7 @@ const DynamicTable = <T,>({
     imageCellRenderer: ImageCellRenderer,
     listCellRenderer: ListCellRenderer,
     objectCellRenderer: ObjectCellRenderer,
+    arrayObjectCellRenderer: ArrayObjectCellRenderer,
   };
 
   return (
@@ -197,21 +198,27 @@ const ObjectCellRenderer: React.FC<ObjectCellRendererProps> = (
 interface ArrayObjectCellRendererProps extends ICellRendererParams {
   value: object;
   fieldToShow: string;
+  objectTag: string;
 }
 
 export const ArrayObjectCellRenderer: React.FC<ArrayObjectCellRendererProps> = (
   props: ArrayObjectCellRendererProps
 ) => {
-  const { value, fieldToShow } = props;
+  const { value, fieldToShow, objectTag } = props;
 
   if (!Array.isArray(value) || value.length === 0) {
     return <span>-</span>;
   }
 
+  console.log(objectTag);
+  console.log(fieldToShow);
+
   return (
     <ul>
       {value.map((item, index) => (
-        <li key={index}>{item[fieldToShow] || JSON.stringify(item)}</li>
+        <li key={index}>
+          {item[objectTag][fieldToShow] || JSON.stringify(item)}
+        </li>
       ))}
     </ul>
   );
