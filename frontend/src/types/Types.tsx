@@ -297,11 +297,15 @@ export type ReservationData = {
 export const ReservationFieldDetails: FieldDetails = {
   fieldHeaders: [
     {
-      tag: "user",
-      headerName: "Cliente",
+      tag: "user.firstName",
+      headerName: "Nombres cliente",
     },
     {
-      tag: "rooms",
+      tag: "user.lastName",
+      headerName: "Apellidos cliente",
+    },
+    {
+      tag: "rooms.room.code",
       headerName: "Reservas",
     },
     {

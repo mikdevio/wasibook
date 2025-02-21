@@ -28,6 +28,7 @@ const DynamicTable = <T,>({
     actionCellRenderer: ActionCellRenderer,
     imageCellRenderer: ImageCellRenderer,
     listCellRenderer: ListCellRenderer,
+    objectCellRenderer: ObjectCellRenderer,
   };
 
   return (
@@ -76,18 +77,6 @@ const ActionCellRenderer: React.FC<ActionCellRendererProps> = (
   const handleCloseModal = () => setShowModal(false);
 
   const handleView = () => {
-    // let xdata = "";
-    // if (data.user.firstName && data.user.lastName) {
-    //   xdata +=
-    //     "Cliente: " + data.user.firstName + " " + data.user.lastName + " ";
-    // }
-    // if (data.rooms) {
-    //   xdata += "Habitaciones: ";
-    //   data.rooms.map(
-    //     (room) => (xdata += room.room.code + " " + room.checkInDate)
-    //   );
-    // }
-    // alert(`View ${id}  ${xdata}`);
     handleShowModal();
   };
 
@@ -159,25 +148,72 @@ const ImageCellRenderer: React.FC<ImageCellRendererProps> = (props) => {
 };
 
 interface ListCellRendererProps extends ICellRendererParams {
-  itemList: string[];
+  value: string[];
 }
 
 const ListCellRenderer: React.FC<ListCellRendererProps> = (
   props: ListCellRendererProps
 ) => {
-  const { itemList } = props;
-  const [list, setList] = useState<string[]>(itemList);
+  const { value } = props;
 
-  useEffect(() => {}, [list]);
+  if (!Array.isArray(value) || value.length === 0) {
+    return <span>(Vacío)</span>;
+  }
 
   return (
-    <div>
-      <ul>
-        {list.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
+    <ul className="list-disc pl-4">
+      {value.map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ul>
+  );
+};
+
+interface ObjectCellRendererProps extends ICellRendererParams {
+  value: object;
+}
+
+const ObjectCellRenderer: React.FC<ObjectCellRendererProps> = (
+  props: ObjectCellRendererProps
+) => {
+  const { value } = props;
+
+  if (!value || typeof value !== "object") {
+    return <span>(Sin datos)</span>;
+  }
+
+  return (
+    <div className="p-2 bg-gray-100 rounded">
+      {Object.entries(value).map(([key, val], index) => (
+        <div key={index}>
+          <strong>{key}:</strong>{" "}
+          {typeof val === "object" ? JSON.stringify(val) : String(val)}
+        </div>
+      ))}
     </div>
+  );
+};
+
+interface ArrayObjectCellRendererProps extends ICellRendererParams {
+  value: object;
+  fieldToShow: string;
+}
+
+export const ArrayObjectCellRenderer: React.FC<ArrayObjectCellRendererProps> = (
+  props: ArrayObjectCellRendererProps
+) => {
+  const { value, fieldToShow } = props;
+
+  if (!Array.isArray(value) || value.length === 0) {
+    return <span>-</span>;
+  }
+
+  return (
+    <ul>
+      {value.map((item, index) => (
+        <li key={index}>{item[fieldToShow] || JSON.stringify(item)}</li>
+      ))}
+    </ul>
   );
 };
 

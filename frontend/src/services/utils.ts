@@ -18,56 +18,83 @@ export const getStayLength = (dateIn: Date, dateOut: Date): number => {
   return diffDays <= 0 ? 1 : diffDays;
 };
 
-// Function to generate columnDefs for AgGridTables
 export function generateColumnDefs<T>(obj: T, details: FieldDetails): ColDef[] {
   let cols: ColDef[] = [];
   const objectKeys = obj as Record<string, unknown>;
-  console.log(objectKeys);
+
+  console.log(obj);
   for (const key in objectKeys) {
-    // console.log(key, details.fieldExcluded.includes(key));
     if (
       Object.prototype.hasOwnProperty.call(objectKeys, key) &&
       !details.fieldExcluded.includes(key)
     ) {
-      if (key !== "img") {
-        cols.push({
-          field: key,
-          headerName: details.fieldHeaders.filter((f) => f.tag === key)[0]
-            ?.headerName,
-        });
-      } else if (key === "img") {
+      const fieldHeader = details.fieldHeaders.find((f) => f.tag === key);
+      const value = objectKeys[key];
+
+      if (key === "img") {
         cols.push({
           field: key,
           headerName: "Imagen",
           cellRenderer: "imageCellRenderer",
         });
-      } else if (typeof key === "object") {
-        // FIXME: no se muestra la lista de elementos no detecta el tipo de datos
+      } else if (Array.isArray(value)) {
+        console.log(`Como array => ${key}`);
+        // Si el array contiene objetos, usar un cellRenderer especializado
+        if (typeof value[0] === "object" && value[0] !== null) {
+          cols.push({
+            field: key,
+            headerName: fieldHeader?.headerName || "Lista de Objetos",
+            cellRenderer: "arrayObjectCellRenderer",
+            cellRendererParams: {
+              fieldToShow:
+                details.fieldHeaders
+                  .find((f) => f.tag.startsWith(`${key}.`))
+                  ?.tag.split(".")[1] || "name",
+            },
+          });
+        } else {
+          cols.push({
+            field: key,
+            headerName: fieldHeader?.headerName || "Lista de Elementos",
+            cellRenderer: "listCellRenderer",
+          });
+        }
+      } else if (typeof value === "object" && value !== null) {
+        const nestedField = details.fieldHeaders.find((f) =>
+          f.tag.startsWith(`${key}.`)
+        );
+        console.log(`Como objeto => ${key}`);
+        if (nestedField) {
+          const nestedKey = nestedField.tag.split(".").slice(1).join(".");
+          cols.push({
+            field: `${key}.${nestedKey}`,
+            headerName: nestedField.headerName,
+          });
+        } else {
+          cols.push({
+            field: key,
+            headerName: fieldHeader?.headerName || "Objeto",
+            cellRenderer: "objectCellRenderer",
+          });
+        }
+      } else {
         cols.push({
           field: key,
-          headerName:
-            details.fieldHeaders.filter((f) => f.tag === key)[0]?.headerName ||
-            "Lista de Objetos",
-          cellRenderer: "listCellRenderer",
-          cellRendererParams: {
-            itemList: ["Uno", "Dos", "Tres"],
-          },
+          headerName: fieldHeader?.headerName || key,
         });
       }
     }
   }
 
-  cols = [
-    ...cols,
-    {
-      headerName: "Acciones",
-      field: "actions",
-      cellRenderer: "actionCellRenderer",
-      cellRendererParams: {
-        id_in: objectKeys?._id,
-      },
+  // Agregar columna de Acciones
+  cols.push({
+    headerName: "Acciones",
+    field: "actions",
+    cellRenderer: "actionCellRenderer",
+    cellRendererParams: {
+      id_in: objectKeys?._id,
     },
-  ];
+  });
 
   return cols;
 }
