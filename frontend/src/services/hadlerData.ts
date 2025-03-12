@@ -3,6 +3,7 @@ import {
   CustomerData,
   FtInvoiceData,
   FtReservationData,
+  Invoice,
   InvoiceData,
   ReservationData,
   RoomData,
@@ -234,5 +235,63 @@ export const invoiceCreate = async (
     }
   } catch (error) {
     console.error("Error while sending data to the server:", error);
+  }
+};
+
+export const invoiceGetById = async (
+  invoiceId: string
+): Promise<Invoice | undefined> => {
+  try {
+    // const populateOptions = [
+    //   {
+    //     path: "reservation.user",
+    //     select: "firstName lastName email phone address",
+    //   },
+    //   { path: "reservation.rooms.room", select: "code price roomType" },
+    //   { path: "reservation.rooms.room.taxes", select: "name rate" },
+    // ];
+    // const queryParam = populateOptions
+    //   ? `?populateOptions=${encodeURIComponent(
+    //       JSON.stringify(populateOptions)
+    //     )}`
+    //   : "";
+
+    const response = await fetch(`http://localhost:3000/invoice/${invoiceId}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    if (response.ok) {
+      return data.data as Invoice;
+    } else {
+      const zeroInvoice: Invoice = {
+        id: "",
+        invoiceNumber: "",
+        invoiceAuthNumber: "",
+        customerTaxNumber: "",
+        customerName: "",
+        customerEmail: "",
+        customerAddress: "",
+        customerPhoneNumber: "",
+        companyTaxNumber: "",
+        companyName: "",
+        companyAddress: "",
+        companyEmail: "",
+        companyPhoneNumber: "",
+        items: [],
+        date: new Date().toISOString(),
+        taxRate: 0,
+      };
+      return zeroInvoice;
+    }
+  } catch (error) {
+    console.error("Error while getting data to the server:", error);
   }
 };

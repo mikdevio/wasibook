@@ -4,7 +4,72 @@ import { ColDef, ICellRendererParams } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
-import { EyeFill, Pen, Trash } from "react-bootstrap-icons";
+import { EyeFill, FileEarmarkArrowDown, Pen, Trash } from "react-bootstrap-icons";
+import { generateInvoicePDF } from "../../services/utils";
+import { Invoice, ObjectType } from "../../types/Types";
+import { invoiceGetById } from "../../services/hadlerData";
+
+
+
+// DUMMY DATA TO TEST BILL GENERATOR
+const dummyInvoice: Invoice = {
+  id: "001",
+  invoiceNumber: "001-100-000000001",
+  invoiceAuthNumber:"36508175299051849818338637185331261679260697700833",
+  customerTaxNumber: "0256421389001",
+  customerName: "Juan Rodrigo Pérez Almeida",
+  customerEmail: "juan.perez@example.com",
+  customerAddress:"Tena, Av. 15 de Noviembre y Larrea 4510",
+  customerPhoneNumber: "098476431",
+  companyTaxNumber: "1522647898001",
+  companyName:"Hotel los Anturios",
+  companyAddress:"Calle Misahualli y Los Lirios 1545",
+  companyEmail:"reservas@anturios.com.ec",
+  companyPhoneNumber:"0945126378",
+  items: [
+    { 
+      code: "001",
+      code_aux: "",
+      additional_details:"",
+      subsidy: 0,
+      discount: 0, 
+      description: "Habitacion DeLuxe 4 Estrellas", 
+      quantity: 5, 
+      unitPrice: 50 
+    },
+    { 
+      code: "005",
+      code_aux: "",
+      additional_details:"",
+      subsidy: 0,
+      discount: 0, 
+      description: "Servicio de bebidas DeLuxe", 
+      quantity: 1, 
+      unitPrice: 60 
+    },
+    { code: "003",
+      code_aux: "",
+      additional_details:"",
+      subsidy: 0,
+      discount: 0, 
+      description: "Servicio de parqueo vigilado vehiculo", 
+      quantity: 5, 
+      unitPrice: 5 },
+    { 
+      code: "007",
+      code_aux: "",
+      additional_details:"",
+      subsidy: 0,
+      discount: 0, 
+      description: "Servicio de masaje DeLuxe", 
+      quantity: 2, 
+      unitPrice: 0
+    }
+  ],
+  date: new Date().toISOString(),
+  taxRate: 15,
+};
+
 
 interface DynamicTableProps<T> {
   tableLabel: string;
@@ -62,7 +127,7 @@ const DynamicTable = <T,>({
 };
 
 interface ActionCellRendererProps extends ICellRendererParams {
-  // id_in: string;
+  objectType: ObjectType;
 }
 
 // Actions table component
@@ -71,8 +136,9 @@ const ActionCellRenderer: React.FC<ActionCellRendererProps> = (
 ) => {
   const { data } = props;
   const [id, setID] = useState<string>(data._id);
-
   const [showModal, setShowModal] = useState(false);
+  const [objectData, setObjectData] = useState<Invoice | undefined >(undefined);
+  const [loading, setLoading] = useState(false);
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
@@ -89,9 +155,22 @@ const ActionCellRenderer: React.FC<ActionCellRendererProps> = (
     alert(`Delete ${id}`);
   };
 
+  const handleDownload = async () => {
+    setLoading(true);
+    try{
+      const invoiceData = await invoiceGetById(id);
+      setObjectData(invoiceData);
+    } catch (error) {
+      console.log("Error al obtener datos: ",error);
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
   return (
     <div className="d-flex justify-content-center align-items-center">
-      <Button className="btn-sm btn-secondary" onClick={handleView}>
+      <Button className="btn-sm btn-warning" onClick={handleView}>
         <EyeFill />
       </Button>
       <Button className="btn-sm btn-primary ms-2" onClick={handleEdit}>
@@ -100,6 +179,10 @@ const ActionCellRenderer: React.FC<ActionCellRendererProps> = (
       <Button className="btn-sm btn-danger ms-2" onClick={handleDelete}>
         <Trash />
       </Button>
+      {props.objectType === ObjectType.INVOICE ?
+      <Button className="btn-sm btn-dark ms-2" onClick={handleDownload}>
+        <FileEarmarkArrowDown />
+      </Button> : "" }
       <ShowModal show={showModal} onClose={handleCloseModal} modalData={data} />
     </div>
   );
@@ -210,11 +293,8 @@ export const ArrayObjectCellRenderer: React.FC<ArrayObjectCellRendererProps> = (
     return <span>-</span>;
   }
 
-  console.log(objectTag);
-  console.log(fieldToShow);
-
   return (
-    <ul>
+    <ul className="list-unstyled">
       {value.map((item, index) => (
         <li key={index}>
           {item[objectTag][fieldToShow] || JSON.stringify(item)}
@@ -231,6 +311,7 @@ interface ShowModalProps {
 }
 
 const ShowModal: React.FC<ShowModalProps> = (props: ShowModalProps) => {
+
   return (
     <Modal show={props.show} onHide={props.onClose}>
       <Modal.Header closeButton>

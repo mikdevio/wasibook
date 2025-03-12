@@ -126,17 +126,31 @@ export type CustomerData = {
   reservations: RoomReservedData[];
 };
 
+
+ // Tipos para las tablas de objetos administrador
+
+export enum ObjectType {
+  USER="user",
+  CUSTOMER="customer",
+  ROOM="room",
+  TAX="tax",
+  RESERVATION="reservation",
+  INVOICE="invoice"
+}
+
 export type FieldHeader = {
   tag: string;
   headerName: string;
 };
 
 export type FieldDetails = {
+  objectType: ObjectType;
   fieldHeaders: FieldHeader[];
   fieldExcluded: string[];
 };
 
 export const UserFieldDetails: FieldDetails = {
+  objectType: ObjectType.USER,
   fieldHeaders: [
     {
       tag: "firstName",
@@ -179,6 +193,7 @@ export const UserFieldDetails: FieldDetails = {
 };
 
 export const CustomerFieldDetails: FieldDetails = {
+  objectType: ObjectType.CUSTOMER,
   fieldHeaders: [
     {
       tag: "firstName",
@@ -225,6 +240,7 @@ export const CustomerFieldDetails: FieldDetails = {
 };
 
 export const RoomFieldDetails: FieldDetails = {
+  objectType: ObjectType.ROOM,
   fieldHeaders: [
     {
       tag: "code",
@@ -271,6 +287,7 @@ export const RoomFieldDetails: FieldDetails = {
 };
 
 export const TaxFieldDetails: FieldDetails = {
+  objectType: ObjectType.TAX,
   fieldHeaders: [
     {
       tag: "name",
@@ -295,6 +312,7 @@ export type ReservationData = {
 };
 
 export const ReservationFieldDetails: FieldDetails = {
+  objectType: ObjectType.RESERVATION,
   fieldHeaders: [
     {
       tag: "user.firstName",
@@ -326,6 +344,7 @@ export type InvoiceData = {
 };
 
 export const InvoiceDataDetails: FieldDetails = {
+  objectType: ObjectType.INVOICE,
   fieldHeaders: [
     {
       tag: "reservation",
@@ -355,6 +374,8 @@ export const InvoiceDataDetails: FieldDetails = {
   fieldExcluded: ["_id", "__t", "__v", "createdAt", "updatedAt"],
 };
 
+
+// Sidebar menu constructors
 export type SidebarItem = {
   icon: unknown;
   name: string;
@@ -366,7 +387,6 @@ export type SidebarDetails = {
   props: [];
 };
 
-// Sidebar menu constructors
 // Customer dashboard sidebar
 export const AdminSidebarDetails: SidebarDetails = {
   menus: [
@@ -424,4 +444,36 @@ export const CustomerSidebarDetails: SidebarDetails = {
     },
   ],
   props: [],
+};
+
+
+// TODO: Tipos para facturacion
+export type InvoiceItem = {
+  code: string;
+  code_aux: string;
+  additional_details: string;
+  subsidy: number;
+  discount: number;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+};
+
+export type Invoice = {
+  id: string;
+  invoiceNumber: string;
+  invoiceAuthNumber: string;
+  customerTaxNumber: string;
+  customerName: string;
+  customerEmail: string;
+  customerAddress: string;
+  customerPhoneNumber: string;
+  companyTaxNumber: string;
+  companyName: string;
+  companyEmail: string;
+  companyAddress: string;
+  companyPhoneNumber: string;
+  items: InvoiceItem[];
+  date: string;
+  taxRate?: number;
 };

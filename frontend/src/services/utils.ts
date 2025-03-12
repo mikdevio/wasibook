@@ -1,5 +1,10 @@
 import moment from "moment";
 import { ColDef } from "ag-grid-community";
+
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import JsBarcode from "jsbarcode";
+
 import {
   FieldDetails,
   RoomReservedData,
@@ -8,6 +13,7 @@ import {
   BkReservationData,
   BookingData,
   InvoiceData,
+  Invoice,
 } from "../types/Types";
 
 // Function to caculate days between to dates
@@ -126,7 +132,7 @@ export function generateColumnDefs<T>(obj: T, details: FieldDetails): ColDef[] {
     field: "actions",
     cellRenderer: "actionCellRenderer",
     cellRendererParams: {
-      id_in: objectKeys?._id,
+      objectType: details.objectType,
     },
   });
 
@@ -258,4 +264,177 @@ export const getInvoice = (reservId: string, bookingData: BookingData) => {
   };
 
   return newInvoice;
+};
+
+// TODO: Generacion de factura
+export const generateInvoicePDF = (invoiceData: Invoice): void => {
+  const { id, items, taxRate = 0 } = invoiceData;
+
+  // Constantes diseño
+  const COL_1_INV_HEADER = 14;
+  const ROW_1_INV_HEADER = 15;
+  const COL_1_DATA = 14;
+  const COL_2_DATA = 120;
+
+  // Cálculo de totales
+  const subtotal = items.reduce(
+    (acc, item) => acc + item.quantity * item.unitPrice,
+    0
+  );
+  const tax = (subtotal * taxRate) / 100;
+  const total = subtotal + tax;
+
+  // Condigo de barras autorizacion SRI
+  // Crear un canvas para generar el código de barras
+  const canvas = document.createElement("canvas");
+  JsBarcode(canvas, invoiceData.invoiceAuthNumber, {
+    format: "CODE128",
+    width: 2, // Grosor de las líneas
+    height: 50, // Altura del código de barras
+    displayValue: true, // Muestra el número debajo
+  });
+
+  // Convertir el canvas a una imagen base64
+  const barcodeImage = canvas.toDataURL("image/png");
+
+  // Crear documento PDF
+  const doc = new jsPDF();
+
+  // Título
+  const currentFont = doc.getFont().fontName;
+  doc.setFontSize(18);
+  doc
+    .text(
+      `Factura N° ${invoiceData.invoiceNumber}`,
+      COL_1_INV_HEADER,
+      ROW_1_INV_HEADER
+    )
+    .setFontSize(8);
+  doc.text(
+    `Fecha: ${new Date(invoiceData.date).toLocaleDateString()}`,
+    COL_1_INV_HEADER,
+    ROW_1_INV_HEADER + 5
+  );
+  doc.text(
+    `Autorización: ${invoiceData.invoiceAuthNumber}`,
+    COL_1_INV_HEADER,
+    ROW_1_INV_HEADER + 10
+  );
+  doc.addImage(barcodeImage, "PNG", 110, 8, 85, 12);
+
+  // Datos compañia
+  doc.setFontSize(9).setFont(currentFont, "bold");
+  doc
+    .text(`Emisor:`, COL_1_DATA, ROW_1_INV_HEADER + 30)
+    .setFont(currentFont, "normal");
+  doc.text(`${invoiceData.companyName}`, COL_1_DATA, ROW_1_INV_HEADER + 35);
+  doc.text(
+    `${invoiceData.companyTaxNumber}`,
+    COL_1_DATA,
+    ROW_1_INV_HEADER + 40
+  );
+  doc.text(`${invoiceData.companyEmail}`, COL_1_DATA, ROW_1_INV_HEADER + 45);
+  doc.text(
+    `${invoiceData.companyPhoneNumber}`,
+    COL_1_DATA,
+    ROW_1_INV_HEADER + 50
+  );
+  doc.text(`${invoiceData.companyAddress}`, COL_1_DATA, ROW_1_INV_HEADER + 55);
+
+  // Datos cliente:
+  doc.setFont(currentFont, "bold");
+  doc
+    .text(`Receptor:`, COL_2_DATA, ROW_1_INV_HEADER + 30)
+    .setFont(currentFont, "normal");
+  doc.text(`${invoiceData.customerName}`, COL_2_DATA, ROW_1_INV_HEADER + 35);
+  doc.text(
+    `${invoiceData.customerTaxNumber}`,
+    COL_2_DATA,
+    ROW_1_INV_HEADER + 40
+  );
+  doc.text(`${invoiceData.customerEmail}`, COL_2_DATA, ROW_1_INV_HEADER + 45);
+  doc.text(
+    `${invoiceData.customerPhoneNumber}`,
+    COL_2_DATA,
+    ROW_1_INV_HEADER + 50
+  );
+  doc.text(`${invoiceData.customerAddress}`, COL_2_DATA, ROW_1_INV_HEADER + 55);
+
+  // 🟢 Tabla de Información del Cliente
+  let finalY = ROW_1_INV_HEADER + 60; // Controlamos la posición de las tablas
+  autoTable(doc, {
+    startY: finalY,
+    head: [
+      [
+        "Cod.",
+        "Aux.Cod",
+        "Cantidad",
+        "Descripción",
+        "Detalles Ad.",
+        "Precio Unitario",
+        "Subsidio",
+        "Precio Subs.",
+        "Descuento",
+        "Precio Desc.",
+        "Total",
+      ],
+    ],
+    body: items.map((item) => [
+      item.code,
+      item.code_aux,
+      item.quantity.toString(),
+      item.description,
+      item.additional_details,
+      `$${item.unitPrice.toFixed(2)}`,
+      item.subsidy,
+      `$${(item.unitPrice * (1 - item.subsidy)).toFixed(2)}`,
+      item.discount,
+      `$${(item.unitPrice * (1 - item.subsidy) * (1 - item.discount)).toFixed(
+        2
+      )}`,
+      `$${(
+        item.quantity *
+        item.unitPrice *
+        (1 - item.subsidy) *
+        (1 - item.discount)
+      ).toFixed(2)}`,
+    ]),
+    styles: { fontSize: 8 },
+  });
+
+  // 🔵 Tabla de Totales
+  // Definir fuente
+  const COL_1_WIDTH = 40;
+  const COL_2_WIDTH = 20;
+  const TABLE_WIDTH =
+    (doc as any).lastAutoTable?.finalWidth || COL_1_WIDTH + COL_2_WIDTH; // Fallback si no se calcula
+
+  const pageWidth = doc.internal.pageSize.width;
+  const marginRight = 14; // Espacio entre tabla y borde derecho
+  const marginLeft = pageWidth - TABLE_WIDTH - marginRight;
+  console.log(pageWidth, TABLE_WIDTH, marginLeft);
+
+  finalY =
+    (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable
+      .finalY ?? finalY + 20;
+  autoTable(doc, {
+    startY: finalY + 5,
+    head: [],
+    tableWidth: "auto",
+    margin: { left: marginLeft },
+    body: [
+      ["Subtotal sin IVA", `$${subtotal.toFixed(2)}`],
+      ["IVA 15%", `$${tax.toFixed(2)}`],
+      ["Total", `$${total.toFixed(2)}`],
+    ],
+    styles: { fontSize: 8, fillColor: false },
+    columnStyles: {
+      0: { fontStyle: "bold", cellWidth: COL_1_WIDTH, textColor: 0 },
+      1: { cellWidth: COL_2_WIDTH },
+    },
+  });
+
+  // Guardar PDF
+  doc.save(`Factura_${id}.pdf`);
+  doc.output("dataurlnewwindow");
 };

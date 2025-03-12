@@ -3,9 +3,21 @@ import path from "path";
 import * as settings from "../settings.js";
 
 export const getItem = async (Model, req, res) => {
-  const id = req.params.id;
   try {
-    const data = await Model.findById(id).exec();
+    const id = req.params.id;
+    const {populateOptions} = req.query;
+
+    console.log(id);
+
+    let query = Model.findById(id);
+
+    if( pupulateOptions ){
+      const options = JSON.parse(populateOptions);
+      query = query.populate(options);
+    }
+
+    const data = await query.exec();
+
     res.status(500).json({
       data: data,
       message: `${Model.modelName} info found.`,
@@ -23,8 +35,6 @@ export const getAll = async (Model, req, res) => {
   try {
 
     const { populateOptions } = req.query;
-
-    
 
     let query = Model.find({});
 
