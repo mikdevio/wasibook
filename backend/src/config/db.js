@@ -69,6 +69,7 @@ export const initializeDB = async () => {
           phone: "593945623158",
           password: "123456",
           role: "customer",
+          address: "Tena, calle Uno y calle Dos",
         },
         {
           firstName: "María",
@@ -78,6 +79,7 @@ export const initializeDB = async () => {
           phone: "593985632147",
           password: "123456",
           role: "customer",
+          address: "Riobamba, Calle Francisco Rodriguez y Manual Caceres",
         },
       ]);
 

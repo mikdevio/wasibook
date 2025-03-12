@@ -4,21 +4,20 @@ import * as settings from "../settings.js";
 
 export const getItem = async (Model, req, res) => {
   try {
+    console.log("obteniendo");
     const id = req.params.id;
-    const {populateOptions} = req.query;
-
-    console.log(id);
+    const { populateOptions } = req.query;
 
     let query = Model.findById(id);
 
-    if( pupulateOptions ){
+    if (populateOptions) {
       const options = JSON.parse(populateOptions);
       query = query.populate(options);
     }
 
     const data = await query.exec();
 
-    res.status(500).json({
+    res.status(200).json({
       data: data,
       message: `${Model.modelName} info found.`,
     });
@@ -33,7 +32,6 @@ export const getItem = async (Model, req, res) => {
 
 export const getAll = async (Model, req, res) => {
   try {
-
     const { populateOptions } = req.query;
 
     let query = Model.find({});
@@ -64,7 +62,7 @@ export const editItem = async (Model, req, res) => {
   const id = req.params.id;
   try {
     const data = await Model.findById(id).exec();
-    res.status(500).json({
+    res.status(200).json({
       data: data,
       message: `${Model.modelName} info found.`,
     });

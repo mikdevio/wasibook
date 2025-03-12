@@ -9,65 +9,16 @@ import { generateInvoicePDF } from "../../services/utils";
 import { Invoice, ObjectType } from "../../types/Types";
 import { invoiceGetById } from "../../services/hadlerData";
 
+import { generateRandomBigInt } from "../../services/utils"
 
 
 // DUMMY DATA TO TEST BILL GENERATOR
-const dummyInvoice: Invoice = {
-  id: "001",
-  invoiceNumber: "001-100-000000001",
-  invoiceAuthNumber:"36508175299051849818338637185331261679260697700833",
-  customerTaxNumber: "0256421389001",
-  customerName: "Juan Rodrigo Pérez Almeida",
-  customerEmail: "juan.perez@example.com",
-  customerAddress:"Tena, Av. 15 de Noviembre y Larrea 4510",
-  customerPhoneNumber: "098476431",
+const dummyCompanyData = {
   companyTaxNumber: "1522647898001",
   companyName:"Hotel los Anturios",
   companyAddress:"Calle Misahualli y Los Lirios 1545",
   companyEmail:"reservas@anturios.com.ec",
   companyPhoneNumber:"0945126378",
-  items: [
-    { 
-      code: "001",
-      code_aux: "",
-      additional_details:"",
-      subsidy: 0,
-      discount: 0, 
-      description: "Habitacion DeLuxe 4 Estrellas", 
-      quantity: 5, 
-      unitPrice: 50 
-    },
-    { 
-      code: "005",
-      code_aux: "",
-      additional_details:"",
-      subsidy: 0,
-      discount: 0, 
-      description: "Servicio de bebidas DeLuxe", 
-      quantity: 1, 
-      unitPrice: 60 
-    },
-    { code: "003",
-      code_aux: "",
-      additional_details:"",
-      subsidy: 0,
-      discount: 0, 
-      description: "Servicio de parqueo vigilado vehiculo", 
-      quantity: 5, 
-      unitPrice: 5 },
-    { 
-      code: "007",
-      code_aux: "",
-      additional_details:"",
-      subsidy: 0,
-      discount: 0, 
-      description: "Servicio de masaje DeLuxe", 
-      quantity: 2, 
-      unitPrice: 0
-    }
-  ],
-  date: new Date().toISOString(),
-  taxRate: 15,
 };
 
 
@@ -137,7 +88,6 @@ const ActionCellRenderer: React.FC<ActionCellRendererProps> = (
   const { data } = props;
   const [id, setID] = useState<string>(data._id);
   const [showModal, setShowModal] = useState(false);
-  const [objectData, setObjectData] = useState<Invoice | undefined >(undefined);
   const [loading, setLoading] = useState(false);
 
   const handleShowModal = () => setShowModal(true);
@@ -159,7 +109,19 @@ const ActionCellRenderer: React.FC<ActionCellRendererProps> = (
     setLoading(true);
     try{
       const invoiceData = await invoiceGetById(id);
-      setObjectData(invoiceData);
+      // setObjectData(invoiceData);
+
+      // console.log(invoiceData);
+
+      (invoiceData as Invoice).invoiceAuthNumber = generateRandomBigInt(50);
+      (invoiceData as Invoice).companyTaxNumber = dummyCompanyData.companyTaxNumber;
+      (invoiceData as Invoice).companyName = dummyCompanyData.companyName;
+      (invoiceData as Invoice).companyEmail = dummyCompanyData.companyEmail;
+      (invoiceData as Invoice).companyPhoneNumber = dummyCompanyData.companyPhoneNumber;
+      (invoiceData as Invoice).companyAddress = dummyCompanyData.companyAddress;
+      
+
+      generateInvoicePDF((invoiceData as Invoice));
     } catch (error) {
       console.log("Error al obtener datos: ",error);
     } finally {

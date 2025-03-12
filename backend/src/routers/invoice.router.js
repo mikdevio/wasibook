@@ -34,11 +34,7 @@ router
 
 router
   .route("/create")
-  .post(
-    VerifyAuth,
-    VerifyRole(ROLES_GROUP.ALL),
-    invoiceController.createItem
-  );
+  .post(VerifyAuth, VerifyRole(ROLES_GROUP.ALL), invoiceController.createItem);
 
 router
   .route("/update/:id")
@@ -67,6 +63,6 @@ router
 // Routes with authorization for all roles
 router
   .route("/:id")
-  .get(VerifyAuth, VerifyRole(ROLES_GROUP.ALL, invoiceController.getItem));
+  .get(VerifyAuth, VerifyRole(ROLES_GROUP.ALL), invoiceController.getItem);
 
 export default router;

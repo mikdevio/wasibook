@@ -266,6 +266,44 @@ export const getInvoice = (reservId: string, bookingData: BookingData) => {
   return newInvoice;
 };
 
+// Convertir InvoiceBK to InvoiceFK
+export function transformInvoiceData(inputData: any): Invoice {
+  // console.log(inputData);
+
+  const invoiceObjetc: Invoice = {
+    id: inputData._id,
+    invoiceNumber: inputData._id, // Si tienes un número real de factura, cámbialo aquí
+    invoiceAuthNumber: "", // Si hay un número de autorización, agrégalo aquí
+    customerTaxNumber: inputData.reservation?.user?.taxNumber || "",
+    customerName: `${inputData.reservation?.user?.firstName || ""} ${
+      inputData.reservation?.user?.lastName || ""
+    }`,
+    customerEmail: inputData.reservation?.user?.email || "",
+    customerAddress: inputData.reservation?.user?.address || "",
+    customerPhoneNumber: inputData.reservation?.user?.phone || "",
+    companyTaxNumber: inputData.companyTaxNumber,
+    companyName: inputData?.companyName || "",
+    companyEmail: inputData?.companyEmail || "",
+    companyAddress: inputData.companyAddress || "",
+    companyPhoneNumber: inputData.companyPhoneNumber || "",
+    items:
+      inputData.reservation?.rooms.map((room: any) => ({
+        code: room.room?.code || "",
+        code_aux: "", // Puedes agregar un código auxiliar si lo tienes
+        additional_details: "Not defined", // Puedes ajustar esto según sea necesario
+        subsidy: 0, // No hay subsidio en los datos originales
+        discount: 0, // Puedes calcular un descuento si aplica
+        description: room.room?.roomType || "Room", // Descripción del producto
+        quantity: getStayLength(room.checkInDate, room.checkOutDate), // Calcula dias
+        unitPrice: room.room?.price || 0, // Precio de la habitación
+      })) || [],
+    date: inputData.issueDate || new Date().toISOString(),
+    taxRate: 15, // Puedes calcularlo si tienes información de impuestos
+  };
+
+  return invoiceObjetc;
+}
+
 // TODO: Generacion de factura
 export const generateInvoicePDF = (invoiceData: Invoice): void => {
   const { id, items, taxRate = 0 } = invoiceData;
@@ -438,3 +476,13 @@ export const generateInvoicePDF = (invoiceData: Invoice): void => {
   doc.save(`Factura_${id}.pdf`);
   doc.output("dataurlnewwindow");
 };
+
+// Generando codigos alaeatorios para Clave de autorizacion de facturas
+export function generateRandomBigInt(digits: number): string {
+  let min = BigInt("1" + "0".repeat(digits - 1)); // Mínimo valor de 50 dígitos
+  let max = BigInt("9".repeat(digits)); // Máximo valor de 50 dígitos
+
+  let randomNum = min + BigInt(Math.floor(Math.random() * Number(max - min)));
+
+  return randomNum.toString();
+}

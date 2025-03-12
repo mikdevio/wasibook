@@ -10,6 +10,7 @@ import {
   TaxData,
   UserData,
 } from "../types/Types";
+import { transformInvoiceData } from "./utils";
 
 export const roomGetAll = async (): Promise<RoomData[]> => {
   try {
@@ -38,6 +39,7 @@ export const roomGetAll = async (): Promise<RoomData[]> => {
     if (response.ok) {
       return data.data as RoomData[];
     } else {
+      console.log("Se ejecuta esto en ROOMS");
       return [];
     }
   } catch (error) {
@@ -242,35 +244,58 @@ export const invoiceGetById = async (
   invoiceId: string
 ): Promise<Invoice | undefined> => {
   try {
-    // const populateOptions = [
-    //   {
-    //     path: "reservation.user",
-    //     select: "firstName lastName email phone address",
-    //   },
-    //   { path: "reservation.rooms.room", select: "code price roomType" },
-    //   { path: "reservation.rooms.room.taxes", select: "name rate" },
-    // ];
-    // const queryParam = populateOptions
-    //   ? `?populateOptions=${encodeURIComponent(
-    //       JSON.stringify(populateOptions)
-    //     )}`
-    //   : "";
-
-    const response = await fetch(`http://localhost:3000/invoice/${invoiceId}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
+    const populateOptions = [
+      {
+        path: "reservation",
+        select: "createdAt updatedAt status", // Puedes seleccionar otros campos según necesites
+        populate: [
+          {
+            path: "user",
+            select: "firstName lastName email phone address taxNumber",
+          },
+          {
+            path: "rooms",
+            select: "checkInDate checkOutDate",
+            populate: {
+              path: "room", // Anidado dentro de reservation
+              select: "code price roomType taxes",
+              populate: {
+                path: "taxes",
+                select: "name rate",
+              },
+            },
+          },
+        ],
       },
-    });
+    ];
+
+    const queryParam = populateOptions
+      ? `?populateOptions=${encodeURIComponent(
+          JSON.stringify(populateOptions)
+        )}`
+      : "";
+
+    const response = await fetch(
+      `http://localhost:3000/invoice/${invoiceId}${queryParam}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const data = await response.json();
     console.log(data);
 
-    if (response.ok) {
-      return data.data as Invoice;
+    const invoiceConverted = transformInvoiceData(data.data);
+    // console.log("InvoiceData converted", invoiceConverted);
+
+    if (response.ok || !data.data) {
+      return invoiceConverted;
     } else {
+      console.log("Se ejecuta esta parte");
       const zeroInvoice: Invoice = {
         id: "",
         invoiceNumber: "",
@@ -292,6 +317,6 @@ export const invoiceGetById = async (
       return zeroInvoice;
     }
   } catch (error) {
-    console.error("Error while getting data to the server:", error);
+    console.error("Error while getting data from the server:", error);
   }
 };
